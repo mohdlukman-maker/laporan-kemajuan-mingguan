@@ -65,6 +65,21 @@
   .donut-mini-label{font-size:9px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;font-weight:700;white-space:nowrap;}
   .donut-item .pct-edit{margin-top:1px;font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:3px;}
   .donut-item .pct-edit input{width:54px;text-align:center;font-size:10.5px;padding:1px;}
+  .autopct-box{font-weight:700;font-size:12px;color:var(--navy-dark);background:#f4f6f8;border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap;}
+  .autopct-txt{font-weight:700;color:var(--navy-dark);}
+  .obw-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .obw-stat{background:#eef6fb;border:1px solid #bfdbfe;border-radius:8px;padding:6px 14px;font-size:11px;color:var(--ink-soft);}
+  .obw-stat b{display:block;font-size:18px;color:var(--navy-dark);}
+  .mp-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0 2px;}
+  .mp-table th{text-align:left;color:var(--ink-soft);font-weight:600;border-bottom:1px solid var(--line);padding:2px 3px;font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;}
+  .mp-table td{padding:2px 3px;border-bottom:1px dotted #e8edf2;vertical-align:middle;text-align:left;}
+  .mp-table input[type=text]{font-size:11px;}
+  .mp-table input[type=number]{width:46px;font-size:11px;text-align:right;}
+  .mp-num{text-align:right;white-space:nowrap;}
+  .mp-empty{font-size:10.5px;color:var(--ink-soft);font-style:italic;margin:6px 0;}
+  .tdel{color:var(--red);font-size:14px;cursor:pointer;font-weight:700;padding:0 3px;}
+  .mp-add{display:inline-block;background:#f4f6f8;border:1px solid var(--line);border-radius:6px;padding:2px 9px;font-size:10.5px;cursor:pointer;color:var(--navy);margin-top:3px;}
+  .mp-add:hover{background:#e9eef4;}
   .trade-tasks{font-size:11.5px;color:var(--ink-soft);white-space:pre-line;margin:6px 0;text-align:left;}
   .trade-mp{font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:6px;display:flex;justify-content:space-between;text-align:left;}
 
@@ -162,7 +177,7 @@
 
   @media print{
     body{background:#fff;}
-    .toolbar,.no-print,.row-actions,.add-row-btn,.upload-btn,.hint,#lightbox{display:none!important;}
+    .toolbar,.no-print,.row-actions,.add-row-btn,.upload-btn,.hint,#lightbox,.mp-add,.tdel{display:none!important;}
     section{box-shadow:none;border:1px solid #ddd;break-inside:avoid;}
     .report{max-width:100%;padding:0;}
     body.editing input,body.editing select,body.editing textarea{border:none;background:transparent;}
@@ -300,27 +315,1353 @@
     {"type":"item","wbs":"1.8","desc":"Occupation Permit (OP)","balanceA":100,"schedB":40.00,"actualC":0.00}
   ],
   "manpower": [
-    {"level":"LEVEL 8","trades":[
-      {"name":"Architect","color":"blue","pct":1,"prevPct":0,"manpower":1,"tasks":"Wall Finishes\nFloor Finishes\nWindows\nDoors"},
-      {"name":"Mechanical","color":"orange","pct":8,"prevPct":0,"manpower":10,"tasks":"Mechanical Ventilation System\nFF - Hose Reel System\nFF - Fire Alarm System"},
-      {"name":"Electrical","color":"green","pct":5,"prevPct":0,"manpower":7,"tasks":"Low Voltage (LV) System\nSSB, MDB, DB & SPD\nLightning Protection System\nExtra Low Voltage (ELV) System"}
-    ]},
-    {"level":"LEVEL 1","trades":[
-      {"name":"Architect","color":"blue","pct":30,"prevPct":0,"manpower":56,"tasks":"Wall Finishes\nCeiling Finishes\nFloor Finishes\nWindows\nDoors\nSanitary Fittings\nID Works"},
-      {"name":"Mechanical","color":"orange","pct":24,"prevPct":0,"manpower":77,"tasks":"Cold Water Plumbing\nSanitary Plumbing\nChilled Water Air-Conditioning System\nMechanical Ventilation System\nMedical Gases Pipeline System\nFF - Sprinkler System\nFF - Hose Reel System\nFF - Fire Alarm System\nBoilers & Calorifiers System\nLPG System\nBuilding Supervisory System (BSS)\nPneumatic Tube System\nHydrotherapy Pool System\nRO Water System\nMedical Equipment"},
-      {"name":"Electrical","color":"green","pct":10,"prevPct":0,"manpower":31,"tasks":"Bed Head Trunking\nInformation & Communication Technology\nUPS System\nSSB, MDB, DB & SPD\nSurge Protection & Voltage Stabilizer\nIsolated Power System\nLightning Protection System\nIntegrated BMS\nMedical Equipment\nExtra Low Voltage (ELV) System"}
-    ]},
-    {"level":"ANCILLARY - PPU SUBSTATION (33KV/11KV, SS NO.1,2,3)","trades":[
-      {"name":"Architect","color":"blue","pct":0,"prevPct":0,"manpower":0,"tasks":"No balance-of-work tasks (completed)"},
-      {"name":"Mechanical","color":"orange","pct":4,"prevPct":0,"manpower":5,"tasks":"Mechanical Ventilation\nFire Alarm 3rd Fix FM 200 Suppression"},
-      {"name":"Electrical","color":"green","pct":4,"prevPct":0,"manpower":4,"tasks":"LV System 3rd Fix"}
-    ]},
-    {"level":"LEVEL 2 (contoh - kemaskini ikut data sebenar)","trades":[
-      {"name":"Architect","color":"blue","pct":0,"prevPct":0,"manpower":0,"tasks":"-"},
-      {"name":"Mechanical","color":"orange","pct":0,"prevPct":0,"manpower":0,"tasks":"-"},
-      {"name":"Electrical","color":"green","pct":0,"prevPct":0,"manpower":0,"tasks":"-"}
-    ]}
-  ],
+  {
+    "level": "BASEMENT",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 38,
+        "tasks": [
+          {
+            "name": "Wall Finishes",
+            "pct": 38,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 38,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 38,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 38,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 63,
+        "tasks": [
+          {
+            "name": "Cold Water Plumbing",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Sprinkler System",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 63,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 63,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 25,
+        "tasks": [
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Integrated Building Management System (BMS)",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Information & Communication Technology",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "UPS System",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Surge Protection System & Voltage Stabilizing",
+            "pct": 25,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 1",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 30,
+        "tasks": [
+          {
+            "name": "Wall Finishes",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "Windows",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "Doors",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "Sanitary Fittings",
+            "pct": 30,
+            "manpower": 8
+          },
+          {
+            "name": "ID Works",
+            "pct": 30,
+            "manpower": 8
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 24,
+        "tasks": [
+          {
+            "name": "Cold Water Plumbing",
+            "pct": 24,
+            "manpower": 6
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 24,
+            "manpower": 6
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "FF - Sprinkler System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Boilers & Calorifiers System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "LPG System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Hydrotherapy Pool System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "RO Water System",
+            "pct": 24,
+            "manpower": 5
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 24,
+            "manpower": 5
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 10,
+        "tasks": [
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Bed Head Trunking",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Information & Communication Technology",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "UPS System",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Surge Protection & Voltage Stabilizing",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Isolated Power System",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Lightning Protection System",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Integrated BMS",
+            "pct": 10,
+            "manpower": 3
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 10,
+            "manpower": 2
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 10,
+            "manpower": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 2",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 24,
+        "tasks": [
+          {
+            "name": "Wall Finishes",
+            "pct": 24,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 24,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 24,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 24,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 24,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 25,
+        "tasks": [
+          {
+            "name": "Cold Water Plumbing",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 25,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 25,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 20,
+        "tasks": [
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 20,
+            "manpower": 0
+          },
+          {
+            "name": "Information & Communication Technology",
+            "pct": 20,
+            "manpower": 0
+          },
+          {
+            "name": "UPS System",
+            "pct": 20,
+            "manpower": 0
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 20,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 3",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 8,
+        "tasks": [
+          {
+            "name": "Sanitary Fittings",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "ID Works",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "Wall Finishes",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 8,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 8,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 6,
+        "tasks": [
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Sprinkler System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Boilers & Calorifiers System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "LPG System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Cold Water Plumbing",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 6,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 5,
+        "tasks": [
+          {
+            "name": "Surge Protection & Voltage Stabilizing",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Bed Head Trunking",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Lightning Protection System",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Integrated BMS",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 5,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 4",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 7,
+        "tasks": [
+          {
+            "name": "Sanitary Fittings",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "ID Works",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Wall Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 7,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 6,
+        "tasks": [
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Sprinkler System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Boilers & Calorifiers System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "LPG System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Cold Water Plumbing",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 6,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 6,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "Surge Protection & Voltage Stabilizing",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Bed Head Trunking",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Lightning Protection System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Integrated BMS",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 4,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 5",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 7,
+        "tasks": [
+          {
+            "name": "Sanitary Fittings",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "ID Works",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Wall Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 7,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Boilers & Calorifiers System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 4,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 3,
+        "tasks": [
+          {
+            "name": "Integrated BMS",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Bed Head Trunking",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Surge Protection & Voltage Stabilizing",
+            "pct": 3,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 6",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 7,
+        "tasks": [
+          {
+            "name": "Sanitary Fittings",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "ID Works",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Wall Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 7,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 7,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "Medical Gases Pipeline System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Boilers & Calorifiers System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Sanitary Plumbing",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled Water Air-Conditioning System",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 4,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 3,
+        "tasks": [
+          {
+            "name": "Integrated BMS",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Bed Head Trunking",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Surge Protection & Voltage Stabilizing",
+            "pct": 3,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 7",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 2,
+        "tasks": [
+          {
+            "name": "Wall Finishes",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Ceiling Finishes",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "ID Works",
+            "pct": 2,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 5,
+        "tasks": [
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Building Supervisory System (BSS)",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Pneumatic Tube System",
+            "pct": 5,
+            "manpower": 0
+          },
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 5,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 2,
+        "tasks": [
+          {
+            "name": "Low Voltage (LV) System",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "SSB, MDB, DB & SPD",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Medical Equipment",
+            "pct": 2,
+            "manpower": 0
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 2,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "LEVEL 8",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 1,
+        "tasks": [
+          {
+            "name": "Wall Finishes",
+            "pct": 1,
+            "manpower": 1
+          },
+          {
+            "name": "Floor Finishes",
+            "pct": 1,
+            "manpower": 0
+          },
+          {
+            "name": "Windows",
+            "pct": 1,
+            "manpower": 0
+          },
+          {
+            "name": "Doors",
+            "pct": 1,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 8,
+        "tasks": [
+          {
+            "name": "Mechanical Ventilation System",
+            "pct": 8,
+            "manpower": 4
+          },
+          {
+            "name": "FF - Hose Reel System",
+            "pct": 8,
+            "manpower": 3
+          },
+          {
+            "name": "FF - Fire Alarm System",
+            "pct": 8,
+            "manpower": 3
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 5,
+        "tasks": [
+          {
+            "name": "Lightning Protection System",
+            "pct": 5,
+            "manpower": 4
+          },
+          {
+            "name": "Extra Low Voltage (ELV) System",
+            "pct": 5,
+            "manpower": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "INFRASTRUCTURE (DRAINAGE / SEWERAGE / ROADWORK)",
+    "trades": [
+      {
+        "name": "Drainage System",
+        "color": "lightblue",
+        "prevPct": 13,
+        "tasks": [
+          {
+            "name": "Sump",
+            "pct": 13,
+            "manpower": 0
+          },
+          {
+            "name": "Culvert",
+            "pct": 13,
+            "manpower": 0
+          },
+          {
+            "name": "Perimeter Drain (Apron)",
+            "pct": 13,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Sewerage System",
+        "color": "lightblue",
+        "prevPct": 13,
+        "tasks": [
+          {
+            "name": "Manhole Precast",
+            "pct": 13,
+            "manpower": 0
+          },
+          {
+            "name": "Lay Pipe",
+            "pct": 13,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Roadwork & Carpark",
+        "color": "lightblue",
+        "prevPct": 16,
+        "tasks": [
+          {
+            "name": "Lay Crusher Run",
+            "pct": 16,
+            "manpower": 0
+          },
+          {
+            "name": "Premix Binder",
+            "pct": 16,
+            "manpower": 0
+          },
+          {
+            "name": "Wearing Course",
+            "pct": 16,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "MEDICAL STORE & ENGINEERING DEPARTMENT, MORTUARY, MAIN KITCHEN & CATERING, BALAI PELAWAT, M&E PLANT ROOM, MEDICAL GAS PLANT",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "Ceiling",
+            "pct": 4,
+            "manpower": 0
+          },
+          {
+            "name": "Louvers",
+            "pct": 4,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 3,
+        "tasks": [
+          {
+            "name": "Chilled Water Main Pipe",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Hose Reel Drum",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Fire Alarm Break Glass & Sounders",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "ACMV Panel",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Chilled/Condenser Piping Work for Chiller",
+            "pct": 3,
+            "manpower": 0
+          },
+          {
+            "name": "Make-up Tank",
+            "pct": 3,
+            "manpower": 0
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 3,
+        "tasks": [
+          {
+            "name": "LV and ELV System 3rd Fixed",
+            "pct": 3,
+            "manpower": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "level": "ANCILLARY - PPU SUBSTATION (33KV/11KV, SS NO.1,2,3)",
+    "trades": [
+      {
+        "name": "Architect",
+        "color": "blue",
+        "prevPct": 0,
+        "tasks": []
+      },
+      {
+        "name": "Mechanical",
+        "color": "orange",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "Mechanical Ventilation",
+            "pct": 4,
+            "manpower": 3
+          },
+          {
+            "name": "Fire Alarm 3rd Fix FM 200 Suppression",
+            "pct": 4,
+            "manpower": 2
+          }
+        ]
+      },
+      {
+        "name": "Electrical",
+        "color": "green",
+        "prevPct": 4,
+        "tasks": [
+          {
+            "name": "LV System 3rd Fix",
+            "pct": 4,
+            "manpower": 4
+          }
+        ]
+      }
+    ]
+  }
+],
   "drawing": [
     {"area":"LEVEL 1","title":"Pelan Lantai 1 - Kemajuan Semasa","note":"","img":null},
     {"area":"LEVEL 3","title":"Pelan Lantai 3 - Kemajuan Semasa","note":"","img":null}
@@ -416,7 +1757,21 @@ function mergeImportedData(imported){
     l = l || {};
     return {level:l.level||'', trades:(l.trades||[]).map(function(t){
       t = t || {};
-      return {name:t.name||'', color:t.color||'blue', pct:+t.pct||0, prevPct:(t.prevPct===undefined||t.prevPct===null?0:(+t.prevPct||0)), manpower:+t.manpower||0, tasks:t.tasks||''};
+      let tasks;
+      if(Array.isArray(t.tasks)){
+        /* new schema: task objects */
+        tasks = t.tasks.map(function(tk){ tk = tk||{}; return {name:tk.name||'', pct:+tk.pct||0, manpower:+tk.manpower||0}; });
+      } else {
+        /* legacy schema: task list as plain text -> auto-distribute the old trade-level
+           % and manpower so donuts and totals stay identical after import */
+        const names = String(t.tasks||'').split('\n').map(function(s){ return s.trim(); })
+          .filter(Boolean).filter(function(s){ return s!=='-' && !/^no balance/i.test(s); });
+        const tp = +t.pct||0, tm = +t.manpower||0;
+        const n = names.length;
+        const base = n ? Math.floor(tm/n) : 0, rem = n ? (tm - base*n) : 0;
+        tasks = names.map(function(nm,i){ return {name:nm, pct:tp, manpower:base + (i<rem?1:0)}; });
+      }
+      return {name:t.name||'', color:t.color||'blue', prevPct:(t.prevPct===undefined||t.prevPct===null?0:(+t.prevPct||0)), tasks:tasks};
     })};
   });
   if(Array.isArray(imported.issues)) data.issues = imported.issues;
@@ -598,23 +1953,46 @@ function applyWbsCSV(text){
 }
 function applyManpowerCSV(text){
   const rows = csvToObjects(text);
+  const hasTaskCol = rows.some(r=>(r.task||'').trim()!=='');
   const hasPrevCol = rows.some(r=>r.prevPct!==undefined && r.prevPct!=='');
   const prevMap = {};
   if(!hasPrevCol) (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>{ prevMap[(l.level||'')+'|'+(t.name||'').toUpperCase()] = +t.prevPct||0; }));
   const levels = {}; const order = [];
-  rows.forEach(r=>{
-    const lvl = r.level||'';
-    if(!levels[lvl]){ levels[lvl]={level:lvl, trades:[]}; order.push(lvl); }
-    const nm = r.trade||'';
-    levels[lvl].trades.push({
-      name:nm, color:(r.color||'blue').toLowerCase(),
-      pct:parseFloat(r.pct)||0,
-      prevPct: hasPrevCol ? (parseFloat(r.prevPct)||0) : (prevMap[lvl+'|'+nm.toUpperCase()]||0),
-      manpower:parseInt(r.manpower)||0,
-      tasks:(r.tasks||'').split('|').map(s=>s.trim()).filter(Boolean).join('\n')
+  function levelOf(name){
+    const k = name||'';
+    if(!levels[k]){ levels[k] = {level:k, trades:[], _idx:{}}; order.push(k); }
+    return levels[k];
+  }
+  if(hasTaskCol){
+    rows.forEach(r=>{
+      const L = levelOf(r.level);
+      const tname = r.trade||'';
+      if(L._idx[tname]===undefined){
+        const pv = hasPrevCol ? (parseFloat(r.prevPct)||0) : (prevMap[(r.level||'')+'|'+tname.toUpperCase()]||0);
+        L._idx[tname] = L.trades.length;
+        L.trades.push({name:tname, color:(r.color||'blue').toLowerCase(), prevPct:pv, tasks:[]});
+      }
+      const tr = L.trades[L._idx[tname]];
+      if(r.color) tr.color = r.color.toLowerCase();
+      const pp = parseFloat(r.prevPct);
+      if(hasPrevCol && !isNaN(pp)) tr.prevPct = pp;
+      tr.tasks.push({name:(r.task||'').trim(), pct:parseFloat(r.pct)||0, manpower:parseInt(r.manpower)||0});
     });
-  });
-  data.manpower = order.map(l=>levels[l]);
+  } else {
+    rows.forEach(r=>{
+      const L = levelOf(r.level);
+      const names = (r.tasks||'').split('|').map(s=>s.trim()).filter(Boolean);
+      const tp = parseFloat(r.pct)||0;
+      const tm = parseInt(r.manpower)||0;
+      const n = names.length || 1;
+      const base = Math.floor(tm/n); const rem = tm - base*n;
+      const tasks = (names.length?names:['-']).map((nm,i)=>({name:nm, pct:tp, manpower:base + (i<rem?1:0)}));
+      const pp = parseFloat(r.prevPct);
+      const pv = hasPrevCol ? (isNaN(pp)?0:pp) : (prevMap[(r.level||'')+'|'+(r.trade||'').toUpperCase()]||0);
+      L.trades.push({name:r.trade||'', color:(r.color||'blue').toLowerCase(), prevPct:pv, tasks:tasks});
+    });
+  }
+  data.manpower = order.map(k=>{ const L = levels[k]; delete L._idx; return L; });
 }
 function applyIssuesCSV(text){
   data.issues = csvToObjects(text).map((r,i)=>({
@@ -720,7 +2098,7 @@ function computeTradeActuals(){
   (data.manpower||[]).forEach(lvl=>{
     const levelIsInfra = isInfraText(lvl.level);
     (lvl.trades||[]).forEach(t=>{
-      const mp = +t.manpower||0;
+      const mp = tradeMpOf(t);
       const tname = (t.name||'').toUpperCase();
       const rowIsInfra = levelIsInfra || isInfraText(t.name);
       if(rowIsInfra){
@@ -873,15 +2251,50 @@ function donutSVG(pct,colorHex){
     <circle cx="50" cy="50" r="${r}" fill="none" stroke="${colorHex}" stroke-width="11"
       stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
       stroke-linecap="round" transform="rotate(-90 50 50)"/>
-    <text x="50" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2a36">${Math.round(pct)}%</text>
+    <text x="50" y="${pct<=0?54:56}" text-anchor="middle" font-size="${pct<=0?11:22}" font-weight="700" fill="${pct<=0?'#4f9d69':'#1f2a36'}">${pct<=0?'Completed':Math.round(pct)+'%'}</text>
   </svg>`;
 }
+function tradeTasksOf(t){
+  if(Array.isArray(t.tasks)) return t.tasks;
+  return [];
+}
+function tradePctOf(t){
+  const ts = tradeTasksOf(t);
+  if(!ts.length) return 0;
+  const s = ts.reduce((a,x)=>a+(+x.pct||0),0);
+  return Math.round(s/ts.length*10)/10;
+}
+function tradeMpOf(t){
+  return tradeTasksOf(t).reduce((a,x)=>a+(+x.manpower||0),0);
+}
 function secManpower(num){
-  let blocks = data.manpower.map((lvl,li)=>{
-    let cards = lvl.trades.map((t,ti)=>{
+  let totalMp = 0, obwSum = 0, obwN = 0;
+  (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>{ totalMp += tradeMpOf(t); obwSum += tradePctOf(t); obwN++; }));
+  const obw = obwN ? (obwSum/obwN) : 0;
+  let blocks = (data.manpower||[]).map((lvl,li)=>{
+    let cards = (lvl.trades||[]).map((t,ti)=>{
+      const autoPct = tradePctOf(t);
+      const mpTotal = tradeMpOf(t);
+      const tasks = tradeTasksOf(t);
+      let taskTable;
+      if(!tasks.length){
+        taskTable = `<div class="mp-empty">${editMode?'Tiada tugasan baki kerja.':'Tiada tugasan baki kerja (siap).'}</div>`;
+      } else {
+        const rows = tasks.map((tk,k)=>`<tr>
+          <td>${editMode?`<input type="text" value='${ea(tk.name)}' onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].name=this.value">`:esc(tk.name)}</td>
+          <td class="mp-num">${editMode?`<input type="number" step="0.1" min="0" max="100" value="${n2(tk.pct)}" onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].pct=parseFloat(this.value)||0;render()">`:n2(tk.pct)}</td>
+          <td class="mp-num">${editMode?`<input type="number" step="1" min="0" value="${n2(tk.manpower)}" onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].manpower=parseFloat(this.value)||0;render()">`:n2(tk.manpower)}</td>
+          ${editMode?`<td class="mp-num"><span class="tdel" onclick="removeTask(${li},${ti},${k})" title="Buang tugasan">&times;</span></td>`:''}
+        </tr>`).join('');
+        taskTable = `<table class="mp-table">
+          <thead><tr><th>Tugasan Baki Kerja</th><th class="mp-num">%</th><th class="mp-num">Tenaga</th>${editMode?'<th class="mp-num"></th>':''}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+      }
       return `<div class="trade-card">
         <div class="trade-name-row">
           <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value">`:esc(t.name)}</span>
+          <span class="autopct-box" title="Baki kerja % (auto = purata % tugasan)">${n2(autoPct)}%</span>
         </div>
         <div class="donut-wrap"><div class="donut-pair">
           <div class="donut-item">
@@ -891,12 +2304,13 @@ function secManpower(num){
           </div>
           <div class="donut-item">
             <div class="donut-mini-label">Semasa</div>
-            ${donutSVG(t.pct, tradeColorHex[t.color]||'#3f6fad')}
-            ${editMode?`<div class="pct-edit">% <input type="number" step="1" value="${n2(t.pct)}" onchange="data.manpower[${li}].trades[${ti}].pct=parseFloat(this.value)||0;render()"></div>`:''}
+            ${donutSVG(autoPct, tradeColorHex[t.color]||'#3f6fad')}
+            ${editMode?`<div class="pct-edit">% <span class="autopct-txt">${n2(autoPct)} <span class="ts-auto-tag">(auto)</span></span></div>`:''}
           </div>
         </div></div>
-        <div class="trade-tasks">${editMode?`<textarea onchange="data.manpower[${li}].trades[${ti}].tasks=this.value">${esc(t.tasks)}</textarea>`:esc(t.tasks).split('\n').map(x=>'&bull; '+x).join('<br>')}</div>
-        <div class="trade-mp"><span>Jumlah Tenaga Kerja</span><span>${editMode?`<input type="number" step="1" style="width:60px;display:inline-block;text-align:right" value="${n2(t.manpower)}" onchange="data.manpower[${li}].trades[${ti}].manpower=parseFloat(this.value)||0;render()">`:n2(t.manpower)}</span></div>
+        ${taskTable}
+        ${editMode?`<div style="text-align:left"><span class="mp-add" onclick="addTask(${li},${ti})">+ tugasan</span></div>`:''}
+        <div class="trade-mp"><span>Jumlah Tenaga Kerja</span><span>${n2(mpTotal)}</span></div>
         ${editMode?`<div class="row-actions" style="display:block;text-align:right;margin-top:6px"><span class="mini-btn" onclick="removeTrade(${li},${ti})">Buang trade</span></div>`:''}
       </div>`;
     }).join('');
@@ -911,16 +2325,22 @@ function secManpower(num){
     </div>`;
   }).join('');
   return `<section id="sec-manpower"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('manpower')}</h2></div>
-  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri, warna pudar) dan <b>Semasa</b> (kanan). Setiap minggu: klik butang Salin % Semasa ke Minggu Lepas dahulu, kemudian kemaskini nilai Semasa.</div>'}
+  <div class="obw-strip">
+    <div class="obw-stat">Jumlah Baki Kerja Keseluruhan (auto)<b>${obw.toFixed(2)}%</b></div>
+    <div class="obw-stat">Jumlah Tenaga Kerja Semasa (auto)<b>${totalMp}</b></div>
+  </div>
+  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri, rujukan manual) dan <b>Semasa</b> (kanan, auto = purata % tugasan). % ialah baki kerja yang tinggal (0% = siap). Isi % dan tenaga kerja bagi setiap tugasan &mdash; % trade dan jumlah tenaga dikira automatik. Setiap minggu: klik butang Salin % Semasa ke Minggu Lepas dahulu, kemudian kemaskini tugasan.</div>'}
   ${blocks}
   <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="copyPctToPrev()">&#8594; Salin % Semasa ke Minggu Lepas</span> <span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
   </section>`;
 }
-function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',pct:0,prevPct:0,manpower:0,tasks:''},{name:'Mechanical',color:'orange',pct:0,prevPct:0,manpower:0,tasks:''},{name:'Electrical',color:'green',pct:0,prevPct:0,manpower:0,tasks:''}]}); render(); }
+function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',prevPct:0,tasks:[]},{name:'Mechanical',color:'orange',prevPct:0,tasks:[]},{name:'Electrical',color:'green',prevPct:0,tasks:[]}]}); render(); }
 function removeLevel(i){ commitPendingEdit(); data.manpower.splice(i,1); render(); }
-function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',pct:0,prevPct:0,manpower:0,tasks:''}); render(); }
+function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',prevPct:0,tasks:[]}); render(); }
 function removeTrade(li,ti){ commitPendingEdit(); data.manpower[li].trades.splice(ti,1); render(); }
-function copyPctToPrev(){ commitPendingEdit(); data.manpower.forEach(l=>(l.trades||[]).forEach(t=>{ t.prevPct = +t.pct||0; })); render(); }
+function addTask(li,ti){ commitPendingEdit(); data.manpower[li].trades[ti].tasks.push({name:'Tugasan baharu',pct:0,manpower:0}); render(); }
+function removeTask(li,ti,k){ commitPendingEdit(); data.manpower[li].trades[ti].tasks.splice(k,1); render(); }
+function copyPctToPrev(){ commitPendingEdit(); data.manpower.forEach(l=>(l.trades||[]).forEach(t=>{ t.prevPct = tradePctOf(t); })); render(); }
 
 /* ---------- 6. progress by drawing layout (image gallery + lightbox caption) ---------- */
 function secDrawing(num){
