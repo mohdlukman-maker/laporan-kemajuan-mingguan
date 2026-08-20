@@ -169,6 +169,8 @@
   #printBtn{background:var(--green);color:#fff;}
   #publishBtn{background:#7a3fad;color:#fff;}
   #importBtn{background:#3b4a5a;color:#fff;}
+  #exportSectionBtn{background:#0e7a5f;color:#fff;}
+  #importSectionBtn{background:#8a6d3b;color:#fff;}
   .hint{font-size:11px;color:var(--ink-soft);margin:-6px 0 10px;}
 
   .sheet-panel{background:#fff8ec;border:1px dashed var(--amber);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
@@ -212,7 +214,10 @@
   <button id="printBtn" onclick="window.print()">Print / PDF</button>
   <button id="publishBtn" onclick="publishReport()">Published</button>
   <button id="importBtn" onclick="document.getElementById('importFile').click()">Muat Naik Data Lama</button>
+  <button id="exportSectionBtn" onclick="exportSectionPrompt()">Simpan Bahagian</button>
+  <button id="importSectionBtn" onclick="document.getElementById('importSectionFile').click()">Muat Naik Bahagian</button>
   <input type="file" id="importFile" accept=".html,.htm" style="display:none" onchange="handleImportFile(this)">
+  <input type="file" id="importSectionFile" accept=".json" style="display:none" onchange="handleImportSectionFile(this)">
 </div>
 
 <script id="seed-data" type="application/json">
@@ -1824,6 +1829,88 @@ function handleImportFile(inputEl){
   reader.readAsText(file);
   inputEl.value = '';
 }
+
+/* ---------- partial section export / import (for staff editors) ---------- */
+function exportSectionPrompt(){
+  commitPendingEdit();
+  var choice = prompt(
+    'Simpan bahagian mana?\n\n' +
+    'wbs - Kerja Yang Disiapkan Mingguan (WBS) untuk Editor_WBS.html\n' +
+    'photos - Gambar Kemajuan Mingguan untuk Editor_Photos.html\n\n' +
+    'Taip wbs atau photos:',
+    'wbs'
+  );
+  if(choice===null) return;
+  choice = choice.trim().toLowerCase();
+  var payload = null, filename = '';
+  if(choice==='wbs'){
+    payload = {
+      _partialSection: 'wbs',
+      _partialLabel: 'Kerja Yang Disiapkan Mingguan (WBS) - Sumber Data Work Programme',
+      _partialVersion: 1,
+      _savedAt: new Date().toISOString(),
+      title: data.titles.wbs,
+      headers: data.headers.wbs,
+      wbsRows: data.wbsRows
+    };
+    filename = 'wbs_partial.json';
+  } else if(choice==='photos'){
+    payload = {
+      _partialSection: 'photos',
+      _partialLabel: 'Gambar Kemajuan Mingguan',
+      _partialVersion: 1,
+      _savedAt: new Date().toISOString(),
+      photos: data.photos
+    };
+    filename = 'photos_partial.json';
+  } else {
+    alert('Pilihan tidak dikenali. Taip "wbs" atau "photos".');
+    return;
+  }
+  var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  alert('Fail ' + filename + ' telah dimuat turun. Hantar fail ini kepada staf untuk kemaskini di Editor masing-masing.');
+}
+
+function handleImportSectionFile(inputEl){
+  commitPendingEdit();
+  var file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      var parsed = JSON.parse(e.target.result);
+      if(!parsed._partialSection){
+        alert('Fail ini bukan fail bahagian (partial). Guna "Muat Naik Data Lama" untuk fail laporan penuh .html.');
+        return;
+      }
+      if(parsed._partialSection === 'wbs'){
+        if(!Array.isArray(parsed.wbsRows)){ alert('Fail WBS tidak sah - tiada wbsRows.'); return; }
+        data.wbsRows = parsed.wbsRows;
+        if(parsed.title) data.titles.wbs = parsed.title;
+        if(Array.isArray(parsed.headers) && parsed.headers.length) data.headers.wbs = parsed.headers;
+        render();
+        alert('Bahagian WBS berjaya digabungkan (' + parsed.wbsRows.length + ' baris). Seksyen lain tidak berubah.\n\nJangan lupa klik "Simpan / Save" untuk kekal perubahan.');
+      } else if(parsed._partialSection === 'photos'){
+        if(!Array.isArray(parsed.photos)){ alert('Fail Gambar tidak sah - tiada photos.'); return; }
+        data.photos = parsed.photos;
+        render();
+        alert('Bahagian Gambar Kemajuan berjaya digabungkan (' + parsed.photos.length + ' gambar). Seksyen lain tidak berubah.\n\nJangan lupa klik "Simpan / Save" untuk kekal perubahan.');
+      } else {
+        alert('Bahagian "' + parsed._partialSection + '" belum disokong untuk import.');
+      }
+    }catch(err){
+      alert('Gagal membaca fail: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  inputEl.value = '';
+}
+
 
 function buildPublishedHtml(){
   const prevEdit = editMode;
