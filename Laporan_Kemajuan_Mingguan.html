@@ -65,9 +65,18 @@
   .donut-mini-label{font-size:9px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;font-weight:700;white-space:nowrap;}
   .donut-item .pct-edit{margin-top:1px;font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:3px;}
   .donut-item .pct-edit input{width:54px;text-align:center;font-size:10.5px;padding:1px;}
-  .autopct-box{font-weight:700;font-size:12px;color:var(--navy-dark);background:#f4f6f8;border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap;}
-  .autopct-txt{font-weight:700;color:var(--navy-dark);}
-  .obw-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .trade-pct-box{font-weight:700;font-size:12px;color:var(--navy-dark);background:#f4f6f8;border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap;}
+.tc-panel{background:#f8fafc;border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin:0 0 12px;font-size:11px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.tc-panel b{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-soft);white-space:nowrap;}
+.tc-item{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 6px;}
+.tc-item label{display:inline-flex;align-items:center;cursor:pointer;}
+.tc-item input[type=checkbox]{margin:0;cursor:pointer;}
+.tc-item .tc-label{width:92px;font-size:10.5px;padding:1px 4px;}
+.tc-item select{font-size:10px;padding:1px;}
+.tc-add{display:inline-flex;align-items:center;gap:4px;}
+.tc-add input{width:120px;font-size:10.5px;padding:2px 5px;}
+.tc-add select{font-size:10px;padding:2px;}
+    .obw-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
   .obw-stat{background:#eef6fb;border:1px solid #bfdbfe;border-radius:8px;padding:6px 14px;font-size:11px;color:var(--ink-soft);}
   .obw-stat b{display:block;font-size:18px;color:var(--navy-dark);}
   .mp-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0 2px;}
@@ -1750,6 +1759,7 @@ function mergeImportedData(imported){
   if(imported.titles) data.titles = Object.assign({}, data.titles, imported.titles);
   if(imported.headers) data.headers = Object.assign({}, data.headers, imported.headers);
   if(imported.sheetConfig) data.sheetConfig = Object.assign({}, data.sheetConfig, imported.sheetConfig);
+  if(Array.isArray(imported.taskCols)) data.taskCols = imported.taskCols;
   if(Array.isArray(imported.trend)) data.trend = imported.trend;
   if(imported.tradeSummary) data.tradeSummary = imported.tradeSummary;
   if(Array.isArray(imported.wbsRows)) data.wbsRows = imported.wbsRows;
@@ -1760,7 +1770,7 @@ function mergeImportedData(imported){
       let tasks;
       if(Array.isArray(t.tasks)){
         /* new schema: task objects */
-        tasks = t.tasks.map(function(tk){ tk = tk||{}; return {name:tk.name||'', pct:+tk.pct||0, manpower:+tk.manpower||0}; });
+        tasks = t.tasks.map(function(tk){ tk = tk||{}; const o = {}; Object.keys(tk).forEach(function(k){ o[k]=tk[k]; }); o.name = tk.name||''; o.pct = +tk.pct||0; o.manpower = +tk.manpower||0; return o; });
       } else {
         /* legacy schema: task list as plain text -> auto-distribute the old trade-level
            % and manpower so donuts and totals stay identical after import */
@@ -1771,7 +1781,7 @@ function mergeImportedData(imported){
         const base = n ? Math.floor(tm/n) : 0, rem = n ? (tm - base*n) : 0;
         tasks = names.map(function(nm,i){ return {name:nm, pct:tp, manpower:base + (i<rem?1:0)}; });
       }
-      return {name:t.name||'', color:t.color||'blue', prevPct:(t.prevPct===undefined||t.prevPct===null?0:(+t.prevPct||0)), tasks:tasks};
+      return {name:t.name||'', color:t.color||'blue', prevPct:(t.prevPct===undefined||t.prevPct===null?0:(+t.prevPct||0)), pct:(t.pct===undefined||t.pct===null?undefined:(+t.pct||0)), tasks:tasks};
     })};
   });
   if(Array.isArray(imported.issues)) data.issues = imported.issues;
@@ -1789,6 +1799,7 @@ function mergeImportedData(imported){
       return {area: d.area || d.level || 'LEVEL', title: d.title || '', note: d.note || '', img: d.img || null};
     });
   }
+  normalizeManpowerData();
 }
 
 function handleImportFile(inputEl){
@@ -1970,7 +1981,7 @@ function applyManpowerCSV(text){
       if(L._idx[tname]===undefined){
         const pv = hasPrevCol ? (parseFloat(r.prevPct)||0) : (prevMap[(r.level||'')+'|'+tname.toUpperCase()]||0);
         L._idx[tname] = L.trades.length;
-        L.trades.push({name:tname, color:(r.color||'blue').toLowerCase(), prevPct:pv, tasks:[]});
+        L.trades.push({name:tname, color:(r.color||'blue').toLowerCase(), prevPct:pv, pct:parseFloat(r.pct)||0, tasks:[]});
       }
       const tr = L.trades[L._idx[tname]];
       if(r.color) tr.color = r.color.toLowerCase();
@@ -1989,10 +2000,11 @@ function applyManpowerCSV(text){
       const tasks = (names.length?names:['-']).map((nm,i)=>({name:nm, pct:tp, manpower:base + (i<rem?1:0)}));
       const pp = parseFloat(r.prevPct);
       const pv = hasPrevCol ? (isNaN(pp)?0:pp) : (prevMap[(r.level||'')+'|'+(r.trade||'').toUpperCase()]||0);
-      L.trades.push({name:r.trade||'', color:(r.color||'blue').toLowerCase(), prevPct:pv, tasks:tasks});
+      L.trades.push({name:r.trade||'', color:(r.color||'blue').toLowerCase(), prevPct:pv, pct:tp, tasks:tasks});
     });
   }
   data.manpower = order.map(k=>{ const L = levels[k]; delete L._idx; return L; });
+  normalizeManpowerData();
 }
 function applyIssuesCSV(text){
   data.issues = csvToObjects(text).map((r,i)=>({
@@ -2254,47 +2266,75 @@ function donutSVG(pct,colorHex){
     <text x="50" y="${pct<=0?54:56}" text-anchor="middle" font-size="${pct<=0?11:22}" font-weight="700" fill="${pct<=0?'#4f9d69':'#1f2a36'}">${pct<=0?'Completed':Math.round(pct)+'%'}</text>
   </svg>`;
 }
+/* ---------- task columns ---------- */
+const DEFAULT_TASK_COLS = [
+  {key:'name', label:'Tugasan Baki Kerja', type:'text', fixed:true},
+  {key:'pct', label:'%', type:'number', fixed:true},
+  {key:'manpower', label:'Tenaga', type:'number', fixed:true}
+];
+function cloneDefaultCols(){ return DEFAULT_TASK_COLS.map(function(c){ return Object.assign({}, c); }); }
+function normalizeManpowerData(){
+  if(!Array.isArray(data.taskCols) || !data.taskCols.length) data.taskCols = cloneDefaultCols();
+  /* ensure fixed base cols always exist even if a custom file lacks them */
+  const keys = data.taskCols.map(function(c){ return c.key; });
+  DEFAULT_TASK_COLS.forEach(function(dc){
+    if(keys.indexOf(dc.key)===-1) data.taskCols.push(Object.assign({}, dc));
+  });
+  (data.manpower||[]).forEach(function(l){ (l.trades||[]).forEach(function(t){
+    if(t.pct===undefined || t.pct===null) t.pct = tradePctOfAvg(t); /* one-time migration from auto version */
+    (t.tasks||[]).forEach(function(tk){ if(tk.pct===undefined) tk.pct=0; if(tk.manpower===undefined) tk.manpower=0; });
+  }); });
+}
+function tradePctOfAvg(t){
+  const ts = tradeTasksOf(t);
+  if(!ts.length) return 0;
+  const s = ts.reduce(function(a,x){ return a+(+x.pct||0); },0);
+  return Math.round(s/ts.length*10)/10;
+}
+function tradePctOf(t){ return t.pct===undefined ? 0 : (+t.pct||0); }
+function tradeMpOf(t){
+  return tradeTasksOf(t).reduce(function(a,x){ return a+(+x.manpower||0); },0);
+}
 function tradeTasksOf(t){
   if(Array.isArray(t.tasks)) return t.tasks;
   return [];
 }
-function tradePctOf(t){
-  const ts = tradeTasksOf(t);
-  if(!ts.length) return 0;
-  const s = ts.reduce((a,x)=>a+(+x.pct||0),0);
-  return Math.round(s/ts.length*10)/10;
-}
-function tradeMpOf(t){
-  return tradeTasksOf(t).reduce((a,x)=>a+(+x.manpower||0),0);
-}
+
 function secManpower(num){
+  const cols = taskColsForTable();
   let totalMp = 0, obwSum = 0, obwN = 0;
   (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>{ totalMp += tradeMpOf(t); obwSum += tradePctOf(t); obwN++; }));
   const obw = obwN ? (obwSum/obwN) : 0;
   let blocks = (data.manpower||[]).map((lvl,li)=>{
     let cards = (lvl.trades||[]).map((t,ti)=>{
-      const autoPct = tradePctOf(t);
+      const pct = tradePctOf(t);
       const mpTotal = tradeMpOf(t);
       const tasks = tradeTasksOf(t);
       let taskTable;
       if(!tasks.length){
         taskTable = `<div class="mp-empty">${editMode?'Tiada tugasan baki kerja.':'Tiada tugasan baki kerja (siap).'}</div>`;
       } else {
-        const rows = tasks.map((tk,k)=>`<tr>
-          <td>${editMode?`<input type="text" value='${ea(tk.name)}' onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].name=this.value">`:esc(tk.name)}</td>
-          <td class="mp-num">${editMode?`<input type="number" step="0.1" min="0" max="100" value="${n2(tk.pct)}" onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].pct=parseFloat(this.value)||0;render()">`:n2(tk.pct)}</td>
-          <td class="mp-num">${editMode?`<input type="number" step="1" min="0" value="${n2(tk.manpower)}" onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].manpower=parseFloat(this.value)||0;render()">`:n2(tk.manpower)}</td>
-          ${editMode?`<td class="mp-num"><span class="tdel" onclick="removeTask(${li},${ti},${k})" title="Buang tugasan">&times;</span></td>`:''}
-        </tr>`).join('');
+        const rows = tasks.map((tk,k)=>{
+          const cells = cols.map((c)=>{
+            if(c.key==='name'){
+              return `<td>${editMode?`<input type="text" value='${ea(tk.name)}' onchange="data.manpower[${li}].trades[${ti}].tasks[${k}].name=this.value">`:esc(tk.name)}</td>`;
+            }
+            const numAttrs = c.type==='number' ? ' step="0.1" min="0"' : '';
+            const setter = c.type==='number' ? `data.manpower[${li}].trades[${ti}].tasks[${k}].${c.key}=parseFloat(this.value)||0;render()` : `data.manpower[${li}].trades[${ti}].tasks[${k}].${c.key}=this.value`;
+            return `<td class="mp-num">${editMode?`<input type="${c.type}"${numAttrs} value="${c.type==='number'?n2(tk[c.key]):ea(tk[c.key]||'')}" onchange="${setter}">`:(c.type==='number'?n2(tk[c.key]):esc(tk[c.key]||''))}</td>`;
+          }).join('');
+          return `<tr>${cells}${editMode?`<td class="mp-num"><span class="tdel" onclick="removeTask(${li},${ti},${k})" title="Buang tugasan">&times;</span></td>`:''}</tr>`;
+        }).join('');
+        const heads = cols.map((c)=>{ const di = data.taskCols.indexOf(c); return `<th class="${c.key==='name'?'':'mp-num'}">${editMode?`<input class="tc-label" value='${ea(c.label)}' onchange="data.taskCols[${di}].label=this.value">`:esc(c.label)}</th>`; }).join('');
         taskTable = `<table class="mp-table">
-          <thead><tr><th>Tugasan Baki Kerja</th><th class="mp-num">%</th><th class="mp-num">Tenaga</th>${editMode?'<th class="mp-num"></th>':''}</tr></thead>
+          <thead><tr>${heads}${editMode?'<th class="mp-num"></th>':''}</tr></thead>
           <tbody>${rows}</tbody>
         </table>`;
       }
       return `<div class="trade-card">
         <div class="trade-name-row">
           <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value">`:esc(t.name)}</span>
-          <span class="autopct-box" title="Baki kerja % (auto = purata % tugasan)">${n2(autoPct)}%</span>
+          <span class="trade-pct-box" title="Baki kerja % (manual)">${n2(pct)}%</span>
         </div>
         <div class="donut-wrap"><div class="donut-pair">
           <div class="donut-item">
@@ -2304,8 +2344,8 @@ function secManpower(num){
           </div>
           <div class="donut-item">
             <div class="donut-mini-label">Semasa</div>
-            ${donutSVG(autoPct, tradeColorHex[t.color]||'#3f6fad')}
-            ${editMode?`<div class="pct-edit">% <span class="autopct-txt">${n2(autoPct)} <span class="ts-auto-tag">(auto)</span></span></div>`:''}
+            ${donutSVG(pct, tradeColorHex[t.color]||'#3f6fad')}
+            ${editMode?`<div class="pct-edit">% <input type="number" step="1" value="${n2(pct)}" onchange="data.manpower[${li}].trades[${ti}].pct=parseFloat(this.value)||0;render()"></div>`:''}
           </div>
         </div></div>
         ${taskTable}
@@ -2324,21 +2364,59 @@ function secManpower(num){
       <div class="trade-cards">${cards}</div>
     </div>`;
   }).join('');
+  const colPanel = buildColManager();
   return `<section id="sec-manpower"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('manpower')}</h2></div>
   <div class="obw-strip">
-    <div class="obw-stat">Jumlah Baki Kerja Keseluruhan (auto)<b>${obw.toFixed(2)}%</b></div>
-    <div class="obw-stat">Jumlah Tenaga Kerja Semasa (auto)<b>${totalMp}</b></div>
+    <div class="obw-stat">Jumlah Baki Kerja Keseluruhan<b>${obw.toFixed(2)}%</b></div>
+    <div class="obw-stat">Jumlah Tenaga Kerja Semasa<b>${totalMp}</b></div>
   </div>
-  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri, rujukan manual) dan <b>Semasa</b> (kanan, auto = purata % tugasan). % ialah baki kerja yang tinggal (0% = siap). Isi % dan tenaga kerja bagi setiap tugasan &mdash; % trade dan jumlah tenaga dikira automatik. Setiap minggu: klik butang Salin % Semasa ke Minggu Lepas dahulu, kemudian kemaskini tugasan.</div>'}
+  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri) dan <b>Semasa</b> (kanan). % ialah baki kerja yang tinggal (0% = siap) &mdash; kedua-dua nilai dimasukkan secara manual. Gunakan <b>Tetapan Lajur</b> untuk tambah/buang lajur pada jadual tugasan (lajur tetap: Tugasan, %, Tenaga boleh ditukar label atau disorok; lajur tambahan boleh ditambah atau dibuang).</div>'}
+  ${colPanel}
   ${blocks}
   <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="copyPctToPrev()">&#8594; Salin % Semasa ke Minggu Lepas</span> <span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
   </section>`;
 }
-function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',prevPct:0,tasks:[]},{name:'Mechanical',color:'orange',prevPct:0,tasks:[]},{name:'Electrical',color:'green',prevPct:0,tasks:[]}]}); render(); }
+
+/* ---------- column manager (edit mode only) ---------- */
+function buildColManager(){
+  if(!editMode) return '';
+  const cols = data.taskCols;
+  let items = cols.map((c,i)=>{
+    const removable = !c.fixed;
+    return `<span class="tc-item"><label><input type="checkbox" ${c.show===false?'':'checked'} onchange="toggleTaskCol(${i})"></label>
+      <input class="tc-label" value='${ea(c.label)}' onchange="data.taskCols[${i}].label=this.value">
+      ${removable?`<span class="tdel" onclick="removeTaskCol(${i})" title="Buang lajur">&times;</span>`:`<span class="tc-lock" title="Lajur tetap - label boleh diubah, lajur tidak boleh dibuang">&#128274;</span>`}</span>`;
+  }).join('');
+  return `<div class="tc-panel">
+    <b>Tetapan Lajur:</b>
+    ${items}
+    <span class="tc-add"><input id="tcNewLabel" placeholder="Nama lajur baru..." maxlength="30"><select id="tcNewType"><option value="text">Teks</option><option value="number">Nombor</option></select>
+    <span class="mini-btn" onclick="addTaskCol()">+ Tambah Lajur</span></span>
+  </div>`;
+}
+function taskColsForTable(){
+  return (data.taskCols||[]).filter(function(c){ return c.show!==false; });
+}
+function toggleTaskCol(i){ data.taskCols[i].show = data.taskCols[i].show===false; render(); }
+function removeTaskCol(i){
+  if(data.taskCols[i].fixed) return;
+  const key = data.taskCols[i].key;
+  data.taskCols.splice(i,1);
+  (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>(t.tasks||[]).forEach(tk=>{ delete tk[key]; })));
+  render();
+}
+function addTaskCol(){
+  const label = (document.getElementById('tcNewLabel').value||'').trim();
+  if(!label){ alert('Sila masukkan nama lajur.'); return; }
+  const type = document.getElementById('tcNewType').value;
+  let key = 'c' + Date.now().toString(36);
+  data.taskCols.push({key:key, label:label, type:type});
+  render();
+}function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',prevPct:0,pct:0,tasks:[]},{name:'Mechanical',color:'orange',prevPct:0,pct:0,tasks:[]},{name:'Electrical',color:'green',prevPct:0,pct:0,tasks:[]}]}); render(); }
 function removeLevel(i){ commitPendingEdit(); data.manpower.splice(i,1); render(); }
-function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',prevPct:0,tasks:[]}); render(); }
+function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',prevPct:0,pct:0,tasks:[]}); render(); }
 function removeTrade(li,ti){ commitPendingEdit(); data.manpower[li].trades.splice(ti,1); render(); }
-function addTask(li,ti){ commitPendingEdit(); data.manpower[li].trades[ti].tasks.push({name:'Tugasan baharu',pct:0,manpower:0}); render(); }
+function addTask(li,ti){ commitPendingEdit(); const tk = {name:'Tugasan baharu',pct:0,manpower:0}; (data.taskCols||[]).forEach(c=>{ if(!c.fixed && tk[c.key]===undefined) tk[c.key] = c.type==='number'?0:''; }); data.manpower[li].trades[ti].tasks.push(tk); render(); }
 function removeTask(li,ti,k){ commitPendingEdit(); data.manpower[li].trades[ti].tasks.splice(k,1); render(); }
 function copyPctToPrev(){ commitPendingEdit(); data.manpower.forEach(l=>(l.trades||[]).forEach(t=>{ t.prevPct = tradePctOf(t); })); render(); }
 
@@ -2504,6 +2582,7 @@ function render(){
   document.getElementById('app').innerHTML = html;
 }
 
+normalizeManpowerData();
 document.body.classList.remove('editing');
 editMode = false;
 render();
