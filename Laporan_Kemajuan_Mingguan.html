@@ -66,16 +66,20 @@
   .donut-item .pct-edit{margin-top:1px;font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:3px;}
   .donut-item .pct-edit input{width:54px;text-align:center;font-size:10.5px;padding:1px;}
   .trade-pct-box{font-weight:700;font-size:12px;color:var(--navy-dark);background:#f4f6f8;border:1px solid var(--line);border-radius:6px;padding:1px 7px;white-space:nowrap;}
-.tc-panel{background:#f8fafc;border:1px dashed var(--line);border-radius:8px;padding:7px 10px;margin:0 0 12px;font-size:11px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-.tc-panel b{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-soft);white-space:nowrap;}
-.tc-item{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 6px;}
-.tc-item label{display:inline-flex;align-items:center;cursor:pointer;}
-.tc-item input[type=checkbox]{margin:0;cursor:pointer;}
-.tc-item .tc-label{width:92px;font-size:10.5px;padding:1px 4px;}
-.tc-item select{font-size:10px;padding:1px;}
-.tc-add{display:inline-flex;align-items:center;gap:4px;}
-.tc-add input{width:120px;font-size:10.5px;padding:2px 5px;}
-.tc-add select{font-size:10px;padding:2px;}
+.tc-panel{background:#f0f4f8;border:2px solid var(--accent,#2563eb);border-radius:10px;padding:12px 14px;margin:0 0 14px;font-size:13px;}
+.tc-panel > b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;margin-bottom:8px;font-weight:700;}
+.tc-cols{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.tc-item{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #cbd5e1;border-radius:8px;padding:6px 10px;min-height:36px;}
+.tc-item:has(input[type=checkbox]:not(:checked)){opacity:.5;background:#f1f5f9;border-style:dashed;}
+.tc-item label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:13px;color:#1e293b;}
+.tc-item input[type=checkbox]{margin:0;cursor:pointer;width:20px;height:20px;accent-color:#2563eb;flex-shrink:0;}
+.tc-item .tc-label{width:110px;font-size:12px;padding:3px 6px;border:1px solid #e2e8f0;border-radius:4px;}
+.tc-item select{font-size:11px;padding:2px;}
+.tc-add{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px dashed #93c5fd;border-radius:8px;padding:6px 10px;}
+.tc-add input{width:140px;font-size:12px;padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;}
+.tc-add select{font-size:11px;padding:4px;}
+.tc-add .mini-btn{font-size:12px;padding:4px 10px;}
+.tdel,.tc-lock{font-size:14px;cursor:pointer;}
     .obw-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
   .obw-stat{background:#eef6fb;border:1px solid #bfdbfe;border-radius:8px;padding:6px 14px;font-size:11px;color:var(--ink-soft);}
   .obw-stat b{display:block;font-size:18px;color:var(--navy-dark);}
@@ -2383,15 +2387,17 @@ function buildColManager(){
   const cols = data.taskCols;
   let items = cols.map((c,i)=>{
     const removable = !c.fixed;
-    return `<span class="tc-item"><label><input type="checkbox" ${c.show===false?'':'checked'} onchange="toggleTaskCol(${i})"></label>
-      <input class="tc-label" value='${ea(c.label)}' onchange="data.taskCols[${i}].label=this.value">
+    return `<span class="tc-item"><label><input type="checkbox" ${c.show===false?'':'checked'} onchange="toggleTaskCol(${i})"> ${esc(c.label)}</label>
+      <input class="tc-label" value='${ea(c.label)}' onchange="data.taskCols[${i}].label=this.value" title="Edit label">
       ${removable?`<span class="tdel" onclick="removeTaskCol(${i})" title="Buang lajur">&times;</span>`:`<span class="tc-lock" title="Lajur tetap - label boleh diubah, lajur tidak boleh dibuang">&#128274;</span>`}</span>`;
   }).join('');
   return `<div class="tc-panel">
-    <b>Tetapan Lajur:</b>
+    <b>Tetapan Lajur (tambah / buang / sorot lajur)</b>
+    <div class="tc-cols">
     ${items}
     <span class="tc-add"><input id="tcNewLabel" placeholder="Nama lajur baru..." maxlength="30"><select id="tcNewType"><option value="text">Teks</option><option value="number">Nombor</option></select>
     <span class="mini-btn" onclick="addTaskCol()">+ Tambah Lajur</span></span>
+    </div>
   </div>`;
 }
 function taskColsForTable(){
