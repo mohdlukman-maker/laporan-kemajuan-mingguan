@@ -1,42 +1,70 @@
 # Laporan Kemajuan Mingguan — Hospital Petra Jaya (300 Katil)
 
-Single-file HTML generator for the **Weekly Progress Report** of the Hospital Petra Jaya completion project (BLACKFOX ENGINEERING SDN. BHD.).
+Aplikasi laporan kemajuan mingguan untuk **Hospital Petra Jaya (300 Katil)** — BLACKFOX ENGINEERING SDN. BHD.
+Single-file HTML app, tiada install, tiada internet diperlukan. Semua data disimpan dalam browser.
 
-## What it is
+> 🔒 **Repo ini PRIVATE** — mengandungi data projek sebenar.
 
-`Laporan_Kemajuan_Mingguan.html` is a self-contained report (no backend, no build step) that:
+## 📥 Download / Install
 
-- Loads in any browser, editable in place via **Edit Mode**
-- Exports a saved copy with all data embedded (`Simpan / Save`)
-- Exports a clean **client/published** version (`Published`)
-- Imports data from an older saved report (`Muat Naik Data Lama`)
-- Refreshes sections from Google Sheets via "Publish to web" CSV URLs
-- Prints / exports to PDF (`Print / PDF`)
+1. Pergi ke **[Releases](https://github.com/mohdlukman-maker/laporan-kemajuan-mingguan/releases)**
+2. Download `LaporanKemajuanMingguan_v1.0.0.zip`
+3. Extract zip ke folder (klik kanan → Extract All)
+4. Double-click salah satu fail `.bat`:
+   - **`Laporan.bat`** — laporan penuh (penyelaras)
+   - **`Editor_WBS.bat`** — editor WBS (staf Work Programme)
+   - **`Editor_Gambar.bat`** — editor gambar (staf foto)
 
-## Sections
+Fail `.bat` buka aplikasi dalam Chrome/Edge **app mode** — tiada address bar, nampak seperti aplikasi desktop.
 
-1. Maklumat Laporan (info)
-2. Ringkasan Kemajuan Fizikal & Kewangan (Trend Mingguan)
-3. Ringkasan Mengikut Disiplin (Trade Summary, with auto-totals from Manpower)
-4. Work Programme (derived from WBS data, look-ahead per group)
-5. Kerja Yang Disiapkan Mingguan (WBS — edit mode only)
-6. Baki Kerja Semasa & Tenaga Pekerja (Manpower Per Task, donut charts)
-7. Progress Mengikut Susun Atur Lantai (Drawing Layout gallery + lightbox)
-8. Isu & Tindakan (Issues & Actions Register)
-9. Prestasi Kewangan — Interim Payment (IPC)
-10. Equipment Delivery / Installation
-11. Gambar Kemajuan Mingguan (photos gallery + lightbox)
-12. Pengesahan dan Tandatangan
+📱 **Telefon**: salin fail `.html` ke telefon, buka dalam Chrome/Safari, menu → *Add to Home screen*.
 
-## Usage
+## 📁 Fail dalam aplikasi
 
-1. Open the HTML file in a browser.
-2. Click **Edit Mode** to edit any cell/section/row in place.
-3. **Simpan / Save** downloads a new copy with your changes embedded.
-4. Next week, use **Muat Naik Data Lama** to import the previous saved report.
+| Fail | Fungsi |
+|---|---|
+| `Laporan_Kemajuan_Mingguan.html` | Laporan penuh 12 seksyen — untuk penyelaras |
+| `Editor_WBS.html` | Editor standalone untuk WBS (Kerja Yang Disiapkan Mingguan) |
+| `Editor_Photos.html` | Editor standalone untuk Gambar Kemajuan Mingguan |
+| `Laporan.bat`, `Editor_WBS.bat`, `Editor_Gambar.bat` | Launcher mod aplikasi |
+| `MULA_SINI.txt` | Arahan guna dalam Bahasa Melayu |
 
-> The Google Sheets refresh is optional — leave the CSV URLs blank if you edit data manually.
+## 👥 Aliran kerja berbilang staf
 
-## License / visibility
+```
+PENYELARAS                    STAF
+──────────                    ────
+[Simpan Bahagian] ──json──►  [Buka Fail]
+                              (kemaskini)
+[Muat Naik Bahagian] ◄─json── [Simpan]
+```
 
-This repository is **public**. Do not commit sensitive client/financial data that should not be public. Prefer editing locally and keep sensitive copies off GitHub.
+1. Penyelaras klik **Simpan Bahagian** → pilih `wbs` atau `photos` → dapat fail `.json`
+2. Hantar fail `.json` + fail editor HTML kepada staf
+3. Staf buka editor, klik **Buka Fail**, kemaskini, klik **Simpan** → dapat fail `.json` baharu
+4. Staf hantar fail `.json` balik
+5. Penyelaras klik **Muat Naik Bahagian** → pilih fail staf → hanya seksyen tersebut berubah
+6. Klik **Simpan / Save** untuk kekal
+
+## ✨ Ciri-ciri
+
+- **12 seksyen laporan** — maklumat, trend, trade summary, work programme, WBS, manpower per task, drawing layout, issues, IPC, equipment, gambar, tanda tangan
+- **Donut manual per-trade** — % dimasukkan manual, bukan auto-calc
+- **Per-trade column controls** — setiap trade boleh tambah/hapus lajur sendiri
+- **Dual donut** (minggu lepas + semasa) dengan butang salin
+- **Partial save/import** — seksyen boleh diedit oleh staf berlainan secara berasingan
+- **Backward compatible** — fail simpan lama (.html) masih boleh dimuat naik
+- **Google Sheets import** — data trend/WBS/manpower/issues/financial/equipment dari CSV
+- **Publish** — jana versi pelanggan (edit controls dibuang)
+- **Print/PDF** — cetak terus atau simpan sebagai PDF
+
+## 🔧 Teknikal
+
+- Single-file HTML — semua CSS/JS inline, tiada dependencies
+- Data disimpan dalam `localStorage` + boleh simpan sebagai fail `.html` (data embedded dalam `<script id="seed-data">`)
+- Editor staf simpan sebagai fail `.json` partial (`_partialSection` tag)
+- Semua berjalan offline — fail:// protocol, tiada server diperlukan
+
+## 📝 Versi
+
+- **v1.0.0** — awal: task-level manpower, manual donut %, per-trade columns, section separation (Editor WBS + Editor Gambar), app launchers

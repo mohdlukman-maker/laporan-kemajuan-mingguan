@@ -1,0 +1,69 @@
+============================================================
+  LAPORAN KEMAJUAN MINGGUAN - APLIKASI
+  Hospital Petra Jaya (300 Katil) - BLACKFOX ENGINEERING
+============================================================
+
+CARA GUNA (3 LANGKAH):
+----------------------
+
+1. Klik dua kali (double-click) salah satu fail .bat:
+
+   Laporan.bat      -> Buka laporan penuh (untuk penyelaras)
+   Editor_WBS.bat   -> Editor WBS untuk staf bahagian Work Programme
+   Editor_Gambar.bat -> Editor Gambar Kemajuan untuk staf bahagian foto
+
+   Fail .bat akan buka aplikasi dalam Chrome/Edge mod "app"
+   (tiada address bar, nampak seperti aplikasi desktop).
+
+   Jika Chrome tiada, ia akan guna Edge. Jika kedua-dua tiada,
+   ia akan guna browser default (mungkin ada address bar).
+
+
+2. UNTUK PENYELARAS (Laporan.bat):
+   - Klik "Simpan Bahagian" -> pilih "wbs" atau "photos"
+     untuk hantar fail .json kepada staf.
+   - Staf kemaskini dan hantar balik fail .json.
+   - Klik "Muat Naik Bahagian" -> pilih fail .json staf.
+   - Klik "Simpan / Save" untuk kekalkan perubahan.
+
+
+3. UNTUK STAF (Editor_WBS.bat / Editor_Gambar.bat):
+   - Klik "Buka Fail" -> buka fail .json dari penyelaras.
+   - Kemaskini data / gambar.
+   - Klik "Simpan" -> dapat fail .json baharu.
+   - Hantar fail .json balik kepada penyelaras.
+
+
+CARA DAPATKAN APLIKASI:
+-----------------------
+1. Pergi ke: https://github.com/mohdlukman-maker/laporan-kemajuan-mingguan
+2. Klik "Releases" di sebelah kanan
+3. Download fail .zip versi terkini
+4. Extract ( unzip ) dan buka folder
+5. Klik dua kali mana-mana fail .bat
+
+
+CARA GUNA DI TELEFON (Android/iPhone):
+-------------------------------------
+1. Salin fail .html ke telefon ( WhatsApp / email / USB )
+2. Buka dalam Chrome ( Android ) atau Safari ( iPhone )
+3. Menu -> "Add to Home screen"
+4. Aplikasi akan muncul sebagai ikon di skrin telefon
+
+
+SOKONGAN BROWSER:
+----------------
+- Google Chrome ( disyorkan )
+- Microsoft Edge
+- Firefox
+- Safari ( iPhone/Mac )
+
+
+NOTA:
+-----
+- Semua data disimpan di dalam browser ( localStorage ) - tiada internet diperlukan
+- Fail laporan disimpan sebagai .html ( mengandungi semua data )
+- Fail bahagian disimpan sebagai .json ( untuk pertukaran antara staf )
+- Laporan penuh boleh di-print ke PDF
+
+============================================================
