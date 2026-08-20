@@ -60,6 +60,11 @@
   .trade-card:last-child{border-right:none;}
   .trade-name-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;margin-bottom:4px;text-align:left;}
   .donut-wrap{display:flex;justify-content:center;margin:2px 0 6px;}
+  .donut-pair{display:flex;justify-content:center;gap:10px;}
+  .donut-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .donut-mini-label{font-size:9px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;font-weight:700;white-space:nowrap;}
+  .donut-item .pct-edit{margin-top:1px;font-size:10px;color:var(--ink-soft);display:flex;align-items:center;gap:3px;}
+  .donut-item .pct-edit input{width:54px;text-align:center;font-size:10.5px;padding:1px;}
   .trade-tasks{font-size:11.5px;color:var(--ink-soft);white-space:pre-line;margin:6px 0;text-align:left;}
   .trade-mp{font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:6px;display:flex;justify-content:space-between;text-align:left;}
 
@@ -296,24 +301,24 @@
   ],
   "manpower": [
     {"level":"LEVEL 8","trades":[
-      {"name":"Architect","color":"blue","pct":1,"manpower":1,"tasks":"Wall Finishes\nFloor Finishes\nWindows\nDoors"},
-      {"name":"Mechanical","color":"orange","pct":8,"manpower":10,"tasks":"Mechanical Ventilation System\nFF - Hose Reel System\nFF - Fire Alarm System"},
-      {"name":"Electrical","color":"green","pct":5,"manpower":7,"tasks":"Low Voltage (LV) System\nSSB, MDB, DB & SPD\nLightning Protection System\nExtra Low Voltage (ELV) System"}
+      {"name":"Architect","color":"blue","pct":1,"prevPct":0,"manpower":1,"tasks":"Wall Finishes\nFloor Finishes\nWindows\nDoors"},
+      {"name":"Mechanical","color":"orange","pct":8,"prevPct":0,"manpower":10,"tasks":"Mechanical Ventilation System\nFF - Hose Reel System\nFF - Fire Alarm System"},
+      {"name":"Electrical","color":"green","pct":5,"prevPct":0,"manpower":7,"tasks":"Low Voltage (LV) System\nSSB, MDB, DB & SPD\nLightning Protection System\nExtra Low Voltage (ELV) System"}
     ]},
     {"level":"LEVEL 1","trades":[
-      {"name":"Architect","color":"blue","pct":30,"manpower":56,"tasks":"Wall Finishes\nCeiling Finishes\nFloor Finishes\nWindows\nDoors\nSanitary Fittings\nID Works"},
-      {"name":"Mechanical","color":"orange","pct":24,"manpower":77,"tasks":"Cold Water Plumbing\nSanitary Plumbing\nChilled Water Air-Conditioning System\nMechanical Ventilation System\nMedical Gases Pipeline System\nFF - Sprinkler System\nFF - Hose Reel System\nFF - Fire Alarm System\nBoilers & Calorifiers System\nLPG System\nBuilding Supervisory System (BSS)\nPneumatic Tube System\nHydrotherapy Pool System\nRO Water System\nMedical Equipment"},
-      {"name":"Electrical","color":"green","pct":10,"manpower":31,"tasks":"Bed Head Trunking\nInformation & Communication Technology\nUPS System\nSSB, MDB, DB & SPD\nSurge Protection & Voltage Stabilizer\nIsolated Power System\nLightning Protection System\nIntegrated BMS\nMedical Equipment\nExtra Low Voltage (ELV) System"}
+      {"name":"Architect","color":"blue","pct":30,"prevPct":0,"manpower":56,"tasks":"Wall Finishes\nCeiling Finishes\nFloor Finishes\nWindows\nDoors\nSanitary Fittings\nID Works"},
+      {"name":"Mechanical","color":"orange","pct":24,"prevPct":0,"manpower":77,"tasks":"Cold Water Plumbing\nSanitary Plumbing\nChilled Water Air-Conditioning System\nMechanical Ventilation System\nMedical Gases Pipeline System\nFF - Sprinkler System\nFF - Hose Reel System\nFF - Fire Alarm System\nBoilers & Calorifiers System\nLPG System\nBuilding Supervisory System (BSS)\nPneumatic Tube System\nHydrotherapy Pool System\nRO Water System\nMedical Equipment"},
+      {"name":"Electrical","color":"green","pct":10,"prevPct":0,"manpower":31,"tasks":"Bed Head Trunking\nInformation & Communication Technology\nUPS System\nSSB, MDB, DB & SPD\nSurge Protection & Voltage Stabilizer\nIsolated Power System\nLightning Protection System\nIntegrated BMS\nMedical Equipment\nExtra Low Voltage (ELV) System"}
     ]},
     {"level":"ANCILLARY - PPU SUBSTATION (33KV/11KV, SS NO.1,2,3)","trades":[
-      {"name":"Architect","color":"blue","pct":0,"manpower":0,"tasks":"No balance-of-work tasks (completed)"},
-      {"name":"Mechanical","color":"orange","pct":4,"manpower":5,"tasks":"Mechanical Ventilation\nFire Alarm 3rd Fix FM 200 Suppression"},
-      {"name":"Electrical","color":"green","pct":4,"manpower":4,"tasks":"LV System 3rd Fix"}
+      {"name":"Architect","color":"blue","pct":0,"prevPct":0,"manpower":0,"tasks":"No balance-of-work tasks (completed)"},
+      {"name":"Mechanical","color":"orange","pct":4,"prevPct":0,"manpower":5,"tasks":"Mechanical Ventilation\nFire Alarm 3rd Fix FM 200 Suppression"},
+      {"name":"Electrical","color":"green","pct":4,"prevPct":0,"manpower":4,"tasks":"LV System 3rd Fix"}
     ]},
     {"level":"LEVEL 2 (contoh - kemaskini ikut data sebenar)","trades":[
-      {"name":"Architect","color":"blue","pct":0,"manpower":0,"tasks":"-"},
-      {"name":"Mechanical","color":"orange","pct":0,"manpower":0,"tasks":"-"},
-      {"name":"Electrical","color":"green","pct":0,"manpower":0,"tasks":"-"}
+      {"name":"Architect","color":"blue","pct":0,"prevPct":0,"manpower":0,"tasks":"-"},
+      {"name":"Mechanical","color":"orange","pct":0,"prevPct":0,"manpower":0,"tasks":"-"},
+      {"name":"Electrical","color":"green","pct":0,"prevPct":0,"manpower":0,"tasks":"-"}
     ]}
   ],
   "drawing": [
@@ -407,7 +412,13 @@ function mergeImportedData(imported){
   if(Array.isArray(imported.trend)) data.trend = imported.trend;
   if(imported.tradeSummary) data.tradeSummary = imported.tradeSummary;
   if(Array.isArray(imported.wbsRows)) data.wbsRows = imported.wbsRows;
-  if(Array.isArray(imported.manpower)) data.manpower = imported.manpower;
+  if(Array.isArray(imported.manpower)) data.manpower = imported.manpower.map(function(l){
+    l = l || {};
+    return {level:l.level||'', trades:(l.trades||[]).map(function(t){
+      t = t || {};
+      return {name:t.name||'', color:t.color||'blue', pct:+t.pct||0, prevPct:(t.prevPct===undefined||t.prevPct===null?0:(+t.prevPct||0)), manpower:+t.manpower||0, tasks:t.tasks||''};
+    })};
+  });
   if(Array.isArray(imported.issues)) data.issues = imported.issues;
   if(imported.financial) data.financial = Object.assign({}, data.financial, imported.financial);
   if(Array.isArray(imported.equipment)) data.equipment = imported.equipment;
@@ -587,13 +598,19 @@ function applyWbsCSV(text){
 }
 function applyManpowerCSV(text){
   const rows = csvToObjects(text);
+  const hasPrevCol = rows.some(r=>r.prevPct!==undefined && r.prevPct!=='');
+  const prevMap = {};
+  if(!hasPrevCol) (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>{ prevMap[(l.level||'')+'|'+(t.name||'').toUpperCase()] = +t.prevPct||0; }));
   const levels = {}; const order = [];
   rows.forEach(r=>{
     const lvl = r.level||'';
     if(!levels[lvl]){ levels[lvl]={level:lvl, trades:[]}; order.push(lvl); }
+    const nm = r.trade||'';
     levels[lvl].trades.push({
-      name:r.trade||'', color:(r.color||'blue').toLowerCase(),
-      pct:parseFloat(r.pct)||0, manpower:parseInt(r.manpower)||0,
+      name:nm, color:(r.color||'blue').toLowerCase(),
+      pct:parseFloat(r.pct)||0,
+      prevPct: hasPrevCol ? (parseFloat(r.prevPct)||0) : (prevMap[lvl+'|'+nm.toUpperCase()]||0),
+      manpower:parseInt(r.manpower)||0,
       tasks:(r.tasks||'').split('|').map(s=>s.trim()).filter(Boolean).join('\n')
     });
   });
@@ -842,6 +859,11 @@ function removeWbsRow(i){ commitPendingEdit(); data.wbsRows.splice(i,1); render(
 
 /* ---------- 4/5. manpower per task (with donut chart) ---------- */
 const tradeColorHex = {blue:'#3f6fad',orange:'#e08a3c',green:'#4f9d69',lightblue:'#6a93c9'};
+function lightenHex(hex,amt){
+  const c=(hex||'#3f6fad').replace('#','');
+  const f=v=>Math.round(v+(255-v)*amt).toString(16).padStart(2,'0');
+  return '#'+f(parseInt(c.substr(0,2),16))+f(parseInt(c.substr(2,2),16))+f(parseInt(c.substr(4,2),16));
+}
 function donutSVG(pct,colorHex){
   pct = Math.max(0,Math.min(100,+pct||0));
   const r=40, c=2*Math.PI*r;
@@ -861,8 +883,18 @@ function secManpower(num){
         <div class="trade-name-row">
           <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value">`:esc(t.name)}</span>
         </div>
-        <div class="donut-wrap">${donutSVG(t.pct, tradeColorHex[t.color]||'#3f6fad')}</div>
-        ${editMode?`<div style="text-align:center;margin-bottom:4px;">% <input type="number" step="1" style="width:60px;display:inline-block;text-align:center" value="${n2(t.pct)}" onchange="data.manpower[${li}].trades[${ti}].pct=parseFloat(this.value)||0;render()"></div>`:''}
+        <div class="donut-wrap"><div class="donut-pair">
+          <div class="donut-item">
+            <div class="donut-mini-label">Minggu Lepas</div>
+            ${donutSVG(t.prevPct, lightenHex(tradeColorHex[t.color]||'#3f6fad', .55))}
+            ${editMode?`<div class="pct-edit">% <input type="number" step="1" value="${n2(t.prevPct)}" onchange="data.manpower[${li}].trades[${ti}].prevPct=parseFloat(this.value)||0;render()"></div>`:''}
+          </div>
+          <div class="donut-item">
+            <div class="donut-mini-label">Semasa</div>
+            ${donutSVG(t.pct, tradeColorHex[t.color]||'#3f6fad')}
+            ${editMode?`<div class="pct-edit">% <input type="number" step="1" value="${n2(t.pct)}" onchange="data.manpower[${li}].trades[${ti}].pct=parseFloat(this.value)||0;render()"></div>`:''}
+          </div>
+        </div></div>
         <div class="trade-tasks">${editMode?`<textarea onchange="data.manpower[${li}].trades[${ti}].tasks=this.value">${esc(t.tasks)}</textarea>`:esc(t.tasks).split('\n').map(x=>'&bull; '+x).join('<br>')}</div>
         <div class="trade-mp"><span>Jumlah Tenaga Kerja</span><span>${editMode?`<input type="number" step="1" style="width:60px;display:inline-block;text-align:right" value="${n2(t.manpower)}" onchange="data.manpower[${li}].trades[${ti}].manpower=parseFloat(this.value)||0;render()">`:n2(t.manpower)}</span></div>
         ${editMode?`<div class="row-actions" style="display:block;text-align:right;margin-top:6px"><span class="mini-btn" onclick="removeTrade(${li},${ti})">Buang trade</span></div>`:''}
@@ -879,14 +911,16 @@ function secManpower(num){
     </div>`;
   }).join('');
   return `<section id="sec-manpower"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('manpower')}</h2></div>
+  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri, warna pudar) dan <b>Semasa</b> (kanan). Setiap minggu: klik butang Salin % Semasa ke Minggu Lepas dahulu, kemudian kemaskini nilai Semasa.</div>'}
   ${blocks}
-  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="copyPctToPrev()">&#8594; Salin % Semasa ke Minggu Lepas</span> <span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
   </section>`;
 }
-function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',pct:0,manpower:0,tasks:''},{name:'Mechanical',color:'orange',pct:0,manpower:0,tasks:''},{name:'Electrical',color:'green',pct:0,manpower:0,tasks:''}]}); render(); }
+function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',pct:0,prevPct:0,manpower:0,tasks:''},{name:'Mechanical',color:'orange',pct:0,prevPct:0,manpower:0,tasks:''},{name:'Electrical',color:'green',pct:0,prevPct:0,manpower:0,tasks:''}]}); render(); }
 function removeLevel(i){ commitPendingEdit(); data.manpower.splice(i,1); render(); }
-function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',pct:0,manpower:0,tasks:''}); render(); }
+function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',pct:0,prevPct:0,manpower:0,tasks:''}); render(); }
 function removeTrade(li,ti){ commitPendingEdit(); data.manpower[li].trades.splice(ti,1); render(); }
+function copyPctToPrev(){ commitPendingEdit(); data.manpower.forEach(l=>(l.trades||[]).forEach(t=>{ t.prevPct = +t.pct||0; })); render(); }
 
 /* ---------- 6. progress by drawing layout (image gallery + lightbox caption) ---------- */
 function secDrawing(num){
