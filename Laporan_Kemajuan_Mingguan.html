@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Kemajuan Mingguan - HPJ</title>
+<style>
+  :root{
+    --navy:#12395c; --navy-dark:#0b2540; --blue:#3f6fad; --orange:#e08a3c; --green:#4f9d69;
+    --red:#c0483f; --amber:#e0a83c; --grey:#aab1ba; --lightblue:#6a93c9; --bg:#eef1f4; --card:#ffffff;
+    --ink:#1f2a36; --ink-soft:#5b6675; --line:#dde2e7; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;}
+  h1,h2,h3{margin:0;}
+  .report{max-width:980px;margin:0 auto;padding:12px 12px 190px;}
+  .cover{background:var(--navy);color:#fff;border-radius:var(--radius);padding:22px 20px;text-align:center;margin-bottom:14px;}
+  .cover .bilno{font-size:13px;letter-spacing:1px;opacity:.85;text-transform:uppercase;}
+  .cover h1{font-size:20px;line-height:1.4;margin:6px 0;}
+  .cover .sub{font-size:13px;opacity:.9;margin-top:6px;}
+  section{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .sec-num{background:var(--navy);color:#fff;font-weight:700;font-size:13px;min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;}
+  .sec-title h2{font-size:15px;letter-spacing:.3px;color:var(--navy-dark);text-transform:uppercase;flex:1;}
+  .sec-title input{font-size:15px;font-weight:700;letter-spacing:.3px;color:var(--navy-dark);text-transform:uppercase;}
+  .edit-badge{font-size:10px;background:var(--amber);color:#3b2a05;padding:2px 8px;border-radius:10px;font-weight:700;text-transform:none;letter-spacing:0;}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle;}
+  th{background:#f4f6f8;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink-soft);}
+  th input{font-size:11px;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+  .table-wrap{overflow-x:auto;}
+  tr.group-row td{background:#e7ecf2;font-weight:700;color:var(--navy-dark);}
+  td.num,th.num{text-align:right;white-space:nowrap;}
+  .neg{color:var(--red);font-weight:600;}
+  .pos{color:var(--green);font-weight:600;}
+
+  input,select,textarea{
+    width:100%;font:inherit;font-size:12.5px;border:1px solid transparent;background:transparent;
+    padding:2px 4px;border-radius:4px;color:var(--ink);
+  }
+  textarea{resize:vertical;min-height:34px;}
+  body.editing input,body.editing select,body.editing textarea{border:1px dashed #b7c3d0;background:#fbfdff;}
+  body.editing input:focus,body.editing select:focus,body.editing textarea:focus{border-color:var(--blue);outline:none;background:#fff;}
+  input[type=number]{text-align:right;}
+
+  .row-actions{display:none;white-space:nowrap;}
+  body.editing .row-actions{display:table-cell;}
+  .mini-btn{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 7px;font-size:11px;color:var(--ink-soft);}
+  .mini-btn:hover{background:#f2f4f6;}
+  .add-row-btn{margin-top:8px;}
+
+  .level-block{margin-bottom:18px;}
+  .level-block:last-child{margin-bottom:0;}
+  .level-head{background:var(--navy);color:#fff;padding:8px 12px;border-radius:8px 8px 0 0;font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .level-head input{color:var(--ink);background:#fbfdff;}
+  .trade-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-top:none;border-radius:0 0 8px 8px;overflow:hidden;}
+  .trade-card{padding:10px 12px;border-right:1px solid var(--line);text-align:center;}
+  .trade-card:last-child{border-right:none;}
+  .trade-name-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;margin-bottom:4px;text-align:left;}
+  .donut-wrap{display:flex;justify-content:center;margin:2px 0 6px;}
+  .trade-tasks{font-size:11.5px;color:var(--ink-soft);white-space:pre-line;margin:6px 0;text-align:left;}
+  .trade-mp{font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:6px;display:flex;justify-content:space-between;text-align:left;}
+
+  @media (max-width:720px){
+    .trade-cards{grid-template-columns:1fr;}
+    .trade-card{border-right:none;border-bottom:1px solid var(--line);}
+    .trade-card:last-child{border-bottom:none;}
+  }
+
+  .prog-group-title{font-weight:700;font-size:12.5px;color:var(--navy-dark);margin:12px 0 4px;text-transform:uppercase;}
+  .prog-group-title:first-child{margin-top:0;}
+  .prog-lookahead{font-size:11.5px;color:var(--ink-soft);background:#f7f9fb;border:1px dashed var(--line);border-radius:6px;padding:6px 8px;margin:4px 0 8px;}
+  .prog-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;}
+  .prog-label{flex:0 0 220px;color:var(--ink-soft);}
+  .prog-track{position:relative;flex:1;height:14px;background:#eef1f4;border-radius:7px;overflow:hidden;}
+  .prog-sched{position:absolute;left:0;top:0;height:100%;background:#c7d3e0;}
+  .prog-actual{position:absolute;left:0;top:0;height:100%;background:var(--blue);}
+  .prog-target{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--red);}
+  .prog-nums{flex:0 0 96px;text-align:right;color:var(--ink-soft);white-space:nowrap;}
+
+  .ts-wrap{display:grid;grid-template-columns:0.85fr 1.15fr;gap:20px;align-items:start;}
+  @media (max-width:720px){.ts-wrap{grid-template-columns:1fr;}}
+  .ts-swatch{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;flex:none;}
+  .ts-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line);font-size:11.5px;}
+  .ts-row:last-child{border-bottom:none;}
+  .ts-row.total{font-weight:700;border-top:2px solid var(--ink);margin-top:2px;padding-top:7px;}
+  .ts-trade{display:flex;align-items:center;flex:1;}
+  .ts-num{width:56px;text-align:center;font-weight:600;}
+  .ts-num input{text-align:center;font-size:11.5px;}
+  .ts-head{display:flex;justify-content:space-between;font-size:10px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:.3px;padding-bottom:4px;border-bottom:1px solid var(--line);margin-bottom:1px;}
+  .ts-auto-tag{font-size:10px;color:var(--ink-soft);font-weight:400;font-style:italic;}
+
+  .ts-chart{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;min-height:120px;padding-top:8px;}
+  .ts-col-group{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:64px;}
+  .ts-cols{display:flex;align-items:flex-end;gap:5px;height:100px;}
+  .ts-col{width:20px;min-height:2px;border-radius:3px 3px 0 0;position:relative;}
+  .ts-col.schedule{background:var(--navy-dark);}
+  .ts-col.actual{background:var(--green);}
+  .ts-col-val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .ts-col-label{font-size:10.5px;color:var(--ink-soft);text-align:center;max-width:80px;}
+  .ts-col-label input{font-size:10.5px;text-align:center;}
+  .ts-col-edit{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink-soft);}
+  .ts-col-edit label{display:flex;align-items:center;gap:2px;}
+  .ts-col-edit input{width:34px;font-size:10.5px;text-align:center;padding:1px;}
+  .ts-legend{display:flex;gap:16px;margin-top:10px;font-size:11.5px;color:var(--ink-soft);}
+  .ts-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .ts-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:11.5px;color:var(--ink-soft);}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .legend i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+  .photo-disc-title{font-weight:700;font-size:12.5px;color:var(--navy-dark);text-transform:uppercase;margin:14px 0 6px;}
+  .photo-disc-title:first-child{margin-top:0;}
+  .photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media (max-width:720px){.photo-grid{grid-template-columns:repeat(2,1fr);}}
+  .photo-card{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:11.5px;}
+  .photo-img{width:100%;aspect-ratio:4/3;background:#f0f2f4;display:flex;align-items:center;justify-content:center;color:#9aa4ae;font-size:11px;text-align:center;overflow:hidden;}
+  .photo-img img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;}
+  .photo-card .pc-body{padding:6px 8px;}
+  .photo-card input{font-size:11.5px;padding:1px 2px;}
+  .upload-btn{display:block;text-align:center;font-size:10.5px;padding:4px;background:#f4f6f8;cursor:pointer;border-top:1px dashed var(--line);}
+
+  .sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;}
+  @media (max-width:720px){.sign-grid{grid-template-columns:1fr;}}
+  .sign-box{border:1px solid var(--line);border-radius:8px;padding:14px 10px;}
+  .sign-role{font-size:11px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:.4px;margin-bottom:26px;}
+  .sign-name{font-weight:700;font-size:13px;border-top:1px solid var(--ink);padding-top:6px;margin-top:6px;}
+  .sign-position{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .sign-date{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+
+  .toolbar{position:fixed;left:0;right:0;bottom:0;background:var(--navy-dark);padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:50;box-shadow:0 -2px 8px rgba(0,0,0,.2);}
+  .toolbar button{flex:1;max-width:220px;padding:11px 10px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;}
+  #editToggle{background:#fff;color:var(--navy-dark);}
+  body.editing #editToggle{background:var(--amber);color:#3b2a05;}
+  #saveBtn{background:var(--blue);color:#fff;}
+  #printBtn{background:var(--green);color:#fff;}
+  #publishBtn{background:#7a3fad;color:#fff;}
+  #importBtn{background:#3b4a5a;color:#fff;}
+  .hint{font-size:11px;color:var(--ink-soft);margin:-6px 0 10px;}
+
+  .sheet-panel{background:#fff8ec;border:1px dashed var(--amber);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
+  .sheet-panel h3{font-size:13px;color:#7a5a10;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;}
+  .sheet-panel .sp-row{display:grid;grid-template-columns:120px 1fr;gap:8px;align-items:center;margin-bottom:6px;font-size:12px;}
+  .sheet-panel input{background:#fff;border:1px solid #e6d6ae;}
+  .sheet-panel .sp-actions{margin-top:10px;display:flex;gap:8px;align-items:center;}
+  #sheetStatus{font-size:11.5px;color:var(--ink-soft);}
+  @media (max-width:720px){.sheet-panel .sp-row{grid-template-columns:1fr;}}
+
+  #lightbox{display:none;position:fixed;inset:0;background:rgba(10,15,20,.9);z-index:200;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;flex-direction:column;gap:14px;}
+  #lightbox.show{display:flex;}
+  #lightbox img{max-width:100%;max-height:80vh;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  #lightbox-caption{color:#fff;font-size:13px;text-align:center;max-width:640px;}
+  #lightbox .lb-close{position:absolute;top:16px;right:20px;color:#fff;font-size:26px;font-weight:700;cursor:pointer;}
+
+  @media print{
+    body{background:#fff;}
+    .toolbar,.no-print,.row-actions,.add-row-btn,.upload-btn,.hint,#lightbox{display:none!important;}
+    section{box-shadow:none;border:1px solid #ddd;break-inside:avoid;}
+    .report{max-width:100%;padding:0;}
+    body.editing input,body.editing select,body.editing textarea{border:none;background:transparent;}
+    input,select,textarea{border:none!important;background:transparent!important;}
+    img{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app" class="report"></div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <span class="lb-close">&times;</span>
+  <img id="lightbox-img" src="">
+  <div id="lightbox-caption"></div>
+</div>
+
+<div class="toolbar no-print" id="toolbar">
+  <button id="editToggle" onclick="toggleEdit()">Edit Mode</button>
+  <button id="saveBtn" onclick="saveReport()">Simpan / Save</button>
+  <button id="printBtn" onclick="window.print()">Print / PDF</button>
+  <button id="publishBtn" onclick="publishReport()">Published</button>
+  <button id="importBtn" onclick="document.getElementById('importFile').click()">Muat Naik Data Lama</button>
+  <input type="file" id="importFile" accept=".html,.htm" style="display:none" onchange="handleImportFile(this)">
+</div>
+
+<script id="seed-data" type="application/json">
+{
+  "sheetConfig": {
+    "trendUrl": "", "wbsUrl": "", "manpowerUrl": "", "issuesUrl": "", "financialUrl": "", "equipmentUrl": ""
+  },
+  "titles": {
+    "info":"Maklumat Laporan",
+    "trend":"Ringkasan Kemajuan Fizikal & Kewangan (Trend Mingguan)",
+    "programme":"Work Programme (Jadual & Look-ahead)",
+    "wbs":"Kerja Yang Disiapkan Mingguan (WBS) - Sumber Data Work Programme",
+    "manpower":"Baki Kerja Semasa & Tenaga Pekerja (Manpower Per Task)",
+    "drawing":"Progress Mengikut Susun Atur Lantai (Drawing Layout)",
+    "issues":"Isu & Tindakan (Issues & Actions Register)",
+    "financial":"Prestasi Kewangan - Interim Payment (IPC)",
+    "equipment":"Equipment Delivery / Installation",
+    "photos":"Gambar Kemajuan Mingguan",
+    "tradeSummary":"Ringkasan Mengikut Disiplin (Trade Summary)",
+    "sign":"Pengesahan dan Tandatangan"
+  },
+  "headers": {
+    "trend": ["Minggu","Jadual Fizikal","Sebenar Fizikal","Varian","Hari Lewat","Jadual Kewangan","Sebenar Kewangan","Varian"],
+    "wbs": ["WBS","Perihal","Baki Kerja (A)","Jadual (B)","Sebenar (C)","Beza (C-B)","Baki (E=A-C)"],
+    "issues": ["Bil","Disiplin","Isu/Masalah","Tindakan Diperlukan","Pihak Bertanggungjawab","Status","Sasaran Selesai"],
+    "equipment": ["Item","Brand"],
+    "financial": ["Jumlah Kontrak Semasa","IPC Terkini (No.)","Nilai Kumulatif Diperakui (RM)","% Diperakui"]
+  },
+  "meta": {
+    "bil": "13/2026",
+    "title": "MENYIAPKAN BAKI KERJA TERBENGKALAI \u2013 HOSPITAL PETRA JAYA (300 KATIL)",
+    "period": "2 \u2013 8 Julai 2026",
+    "cutoff": "8 JULAI 2026",
+    "contractor": "BLACKFOX ENGINEERING SDN. BHD.",
+    "currentCompletion": "14 JULAI 2026 (EOT.05)"
+  },
+  "trend": [
+    {"label":"W11 (24 Jun 2026)","schedPhys":97.50,"actPhys":93.90,"lateDays":48,"schedFinRM":396538388.96,"schedFinPct":92.00,"actFinRM":326713150.90,"actFinPct":75.80},
+    {"label":"W12 (1 Julai 2026)","schedPhys":98.29,"actPhys":94.21,"lateDays":55,"schedFinRM":407443194.66,"schedFinPct":94.53,"actFinRM":327655379.07,"actFinPct":76.02},
+    {"label":"W13 (8 Julai 2026)","schedPhys":99.21,"actPhys":94.52,"lateDays":62,"schedFinRM":420158284.30,"schedFinPct":97.48,"actFinRM":328460308.56,"actFinPct":76.21}
+  ],
+  "tradeSummary": {
+    "trades": [
+      {"name":"Architecture","color":"blue","actual":0,"schedule":0},
+      {"name":"Infrastructure","color":"lightblue","actual":0,"schedule":0},
+      {"name":"Mechanical","color":"orange","actual":0,"schedule":0},
+      {"name":"Electrical & ICT","color":"green","actual":0,"schedule":0}
+    ],
+    "weeks": [
+      {"label":"Week 4 of May 2026","schedule":0,"actual":0},
+      {"label":"Week 5 of May 2026","schedule":0,"actual":0},
+      {"label":"Week 1 of June 2026","schedule":0,"actual":0}
+    ]
+  },
+  "wbsRows": [
+    {"type":"group","wbs":"1.4.2.1","desc":"BASEMENT","lookAhead":"Sambung kerja M&E basement; fokus siapkan zon tertunggak sebelum inspection JKR."},
+    {"type":"item","wbs":"1.4.2.1.1","desc":"Basement Architectural Works","balanceA":38,"schedB":28.88,"actualC":0.04},
+    {"type":"item","wbs":"1.4.2.1.2","desc":"Basement Mechanical Works","balanceA":63,"schedB":46.31,"actualC":0.41},
+    {"type":"item","wbs":"1.4.2.1.3","desc":"Basement Electrical Works","balanceA":25,"schedB":19.75,"actualC":0.36},
+
+    {"type":"group","wbs":"1.4.2.2","desc":"HOSPITAL BLOCK - 1F","lookAhead":"Teruskan ID works & medical equipment rough-in."},
+    {"type":"item","wbs":"1.4.2.2.1","desc":"Architectural Works","balanceA":30,"schedB":27.15,"actualC":2.34},
+    {"type":"item","wbs":"1.4.2.2.2","desc":"Mechanical Works","balanceA":24,"schedB":22.62,"actualC":2.88},
+    {"type":"item","wbs":"1.4.2.2.3","desc":"Electrical Works","balanceA":10,"schedB":9.68,"actualC":2.90},
+
+    {"type":"group","wbs":"1.4.2.3","desc":"HOSPITAL BLOCK - 2F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.3.1","desc":"Architectural Works","balanceA":21,"schedB":18.59,"actualC":1.47},
+    {"type":"item","wbs":"1.4.2.3.2","desc":"Mechanical Works","balanceA":22,"schedB":19.47,"actualC":1.98},
+    {"type":"item","wbs":"1.4.2.3.3","desc":"Electrical Works","balanceA":17,"schedB":14.37,"actualC":1.87},
+
+    {"type":"group","wbs":"1.4.2.4","desc":"HOSPITAL BLOCK - 3F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.4.1","desc":"Architectural Works","balanceA":13,"schedB":12.09,"actualC":1.43},
+    {"type":"item","wbs":"1.4.2.4.2","desc":"Mechanical Works","balanceA":9,"schedB":8.64,"actualC":1.49},
+    {"type":"item","wbs":"1.4.2.4.3","desc":"Electrical Works","balanceA":6,"schedB":5.85,"actualC":1.47},
+
+    {"type":"group","wbs":"1.4.2.5","desc":"HOSPITAL BLOCK - 4F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.5.1","desc":"Architectural Works","balanceA":12,"schedB":10.62,"actualC":1.50},
+    {"type":"item","wbs":"1.4.2.5.2","desc":"Mechanical Works","balanceA":5,"schedB":4.53,"actualC":1.48},
+    {"type":"item","wbs":"1.4.2.5.3","desc":"Electrical Works","balanceA":3,"schedB":2.60,"actualC":1.49},
+
+    {"type":"group","wbs":"1.4.2.6","desc":"HOSPITAL BLOCK - 5F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.6.1","desc":"Architectural Works","balanceA":12,"schedB":10.20,"actualC":1.32},
+    {"type":"item","wbs":"1.4.2.6.2","desc":"Mechanical Works","balanceA":10,"schedB":9.05,"actualC":1.29},
+    {"type":"item","wbs":"1.4.2.6.3","desc":"Electrical Works","balanceA":5,"schedB":4.65,"actualC":1.34},
+
+    {"type":"group","wbs":"1.4.2.7","desc":"HOSPITAL BLOCK - 6F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.7.1","desc":"Architectural Works","balanceA":5,"schedB":4.77,"actualC":0.95},
+    {"type":"item","wbs":"1.4.2.7.2","desc":"Mechanical Works","balanceA":5,"schedB":4.74,"actualC":1.15},
+    {"type":"item","wbs":"1.4.2.7.3","desc":"Electrical Works","balanceA":4,"schedB":3.74,"actualC":1.24},
+
+    {"type":"group","wbs":"1.4.2.8","desc":"HOSPITAL BLOCK - 7F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.8.1","desc":"Architectural Works","balanceA":2,"schedB":1.90,"actualC":0.42},
+    {"type":"item","wbs":"1.4.2.8.2","desc":"Mechanical Works","balanceA":5,"schedB":4.50,"actualC":0.25},
+    {"type":"item","wbs":"1.4.2.8.3","desc":"Electrical Works","balanceA":2,"schedB":1.90,"actualC":0.14},
+
+    {"type":"group","wbs":"1.4.2.9","desc":"HOSPITAL BLOCK - 8F","lookAhead":""},
+    {"type":"item","wbs":"1.4.2.9.1","desc":"Architectural Works","balanceA":1,"schedB":0.90,"actualC":0.01},
+    {"type":"item","wbs":"1.4.2.9.2","desc":"Mechanical Works","balanceA":8,"schedB":7.20,"actualC":0.13},
+    {"type":"item","wbs":"1.4.2.9.3","desc":"Electrical Works","balanceA":5,"schedB":4.50,"actualC":0.14},
+
+    {"type":"group","wbs":"","desc":"LAIN-LAIN","lookAhead":"Utamakan public utility connection & pengesahan T&C sebelum room-to-room inspection."},
+    {"type":"item","wbs":"1.4.2.10","desc":"Roof","balanceA":1,"schedB":0.90,"actualC":0.00},
+    {"type":"item","wbs":"1.4.2.11","desc":"Fascade","balanceA":79,"schedB":71.10,"actualC":2.61},
+    {"type":"item","wbs":"1.4.2.12","desc":"Lift","balanceA":16,"schedB":14.40,"actualC":2.08},
+    {"type":"item","wbs":"1.4.3","desc":"Ancillary Buildings","balanceA":3,"schedB":2.70,"actualC":0.51},
+    {"type":"item","wbs":"1.4.4","desc":"External Works","balanceA":10,"schedB":9.50,"actualC":1.78},
+    {"type":"item","wbs":"1.5","desc":"Public Utility Connections","balanceA":77,"schedB":68.53,"actualC":0.00},
+    {"type":"item","wbs":"1.6","desc":"Testing & Commissioning","balanceA":100,"schedB":70.00,"actualC":0.00},
+    {"type":"item","wbs":"1.7","desc":"Room to Room Inspection with JKR/KKM","balanceA":100,"schedB":65.00,"actualC":0.00},
+    {"type":"item","wbs":"1.8","desc":"Occupation Permit (OP)","balanceA":100,"schedB":40.00,"actualC":0.00}
+  ],
+  "manpower": [
+    {"level":"LEVEL 8","trades":[
+      {"name":"Architect","color":"blue","pct":1,"manpower":1,"tasks":"Wall Finishes\nFloor Finishes\nWindows\nDoors"},
+      {"name":"Mechanical","color":"orange","pct":8,"manpower":10,"tasks":"Mechanical Ventilation System\nFF - Hose Reel System\nFF - Fire Alarm System"},
+      {"name":"Electrical","color":"green","pct":5,"manpower":7,"tasks":"Low Voltage (LV) System\nSSB, MDB, DB & SPD\nLightning Protection System\nExtra Low Voltage (ELV) System"}
+    ]},
+    {"level":"LEVEL 1","trades":[
+      {"name":"Architect","color":"blue","pct":30,"manpower":56,"tasks":"Wall Finishes\nCeiling Finishes\nFloor Finishes\nWindows\nDoors\nSanitary Fittings\nID Works"},
+      {"name":"Mechanical","color":"orange","pct":24,"manpower":77,"tasks":"Cold Water Plumbing\nSanitary Plumbing\nChilled Water Air-Conditioning System\nMechanical Ventilation System\nMedical Gases Pipeline System\nFF - Sprinkler System\nFF - Hose Reel System\nFF - Fire Alarm System\nBoilers & Calorifiers System\nLPG System\nBuilding Supervisory System (BSS)\nPneumatic Tube System\nHydrotherapy Pool System\nRO Water System\nMedical Equipment"},
+      {"name":"Electrical","color":"green","pct":10,"manpower":31,"tasks":"Bed Head Trunking\nInformation & Communication Technology\nUPS System\nSSB, MDB, DB & SPD\nSurge Protection & Voltage Stabilizer\nIsolated Power System\nLightning Protection System\nIntegrated BMS\nMedical Equipment\nExtra Low Voltage (ELV) System"}
+    ]},
+    {"level":"ANCILLARY - PPU SUBSTATION (33KV/11KV, SS NO.1,2,3)","trades":[
+      {"name":"Architect","color":"blue","pct":0,"manpower":0,"tasks":"No balance-of-work tasks (completed)"},
+      {"name":"Mechanical","color":"orange","pct":4,"manpower":5,"tasks":"Mechanical Ventilation\nFire Alarm 3rd Fix FM 200 Suppression"},
+      {"name":"Electrical","color":"green","pct":4,"manpower":4,"tasks":"LV System 3rd Fix"}
+    ]},
+    {"level":"LEVEL 2 (contoh - kemaskini ikut data sebenar)","trades":[
+      {"name":"Architect","color":"blue","pct":0,"manpower":0,"tasks":"-"},
+      {"name":"Mechanical","color":"orange","pct":0,"manpower":0,"tasks":"-"},
+      {"name":"Electrical","color":"green","pct":0,"manpower":0,"tasks":"-"}
+    ]}
+  ],
+  "drawing": [
+    {"area":"LEVEL 1","title":"Pelan Lantai 1 - Kemajuan Semasa","note":"","img":null},
+    {"area":"LEVEL 3","title":"Pelan Lantai 3 - Kemajuan Semasa","note":"","img":null}
+  ],
+  "issues": [
+    {"no":1,"discipline":"SEMUA","issue":"Rayuan Pengecualian Bon dari SESCO","action":"Surat telah dihantar ke SEB pada 23 April 2026","responsible":"BLACKFOX ENGINEERING SDN BHD","status":"Masih menunggu maklumbalas dari pihak SEB. Surat susulan telah dihantar pada 12 Mei 2026 & Jun 2026","target":"Julai 2026"},
+    {"no":2,"discipline":"QS","issue":"Kelulusan V.O HDD","action":"Dokumen akhir telah diserah kepada JKR pada 23 Jun 2026","responsible":"BLACKFOX ENGINEERING SDN BHD","status":"Menunggu maklumbalas pihak JKR","target":"Julai 2026"},
+    {"no":3,"discipline":"QS","issue":"Kelulusan V.O Pagar","action":"Dokumen akhir telah diserah kepada JKR pada 23 Jun 2026","responsible":"BLACKFOX ENGINEERING SDN BHD","status":"Menunggu maklumbalas pihak JKR","target":"Julai 2026"},
+    {"no":4,"discipline":"QS","issue":"Kelulusan V.O RDI","action":"Untuk menghantar dokumen yang lengkap kepada pihak JKR selepas komen dari setiap department","responsible":"BLACKFOX ENGINEERING SDN BHD","status":"Masih mengemaskini dokumen-dokumen berkaitan","target":"Ogos 2026"}
+  ],
+  "financial": {"contractValue":431019988.00,"ipcNo":61,"certifiedCumulative":299250610.39,"pctCertified":69.42},
+  "equipment": [
+    {"item":"Children Playground","brand":"EETEM CONTRACTOR"}
+  ],
+  "photos": [
+    {"discipline":"SENIBINA","title":"External Painting","location":"Decorative Fencing","img":null},
+    {"discipline":"SENIBINA","title":"Prepare Screed for Hardscape Landscape","location":"Courtyard B","img":null},
+    {"discipline":"SENIBINA","title":"Sliding Door Installation","location":"Level 7","img":null},
+    {"discipline":"SENIBINA","title":"Water Proofing","location":"Courtyard C","img":null},
+    {"discipline":"INFRA","title":"Road Kerb Installation","location":"Infront Main Drop Off","img":null},
+    {"discipline":"INFRA","title":"Concrete RC Drain","location":"Infront 2nd Drop Off","img":null},
+    {"discipline":"INFRA","title":"Site Clearing & Prepare Earthwork","location":"OSD No. 3","img":null},
+    {"discipline":"INFRA","title":"Brickwall Drainage Installation","location":"Near Car Park","img":null},
+    {"discipline":"INFRA","title":"Water Recticulation Pipe Installation","location":"Near Balai Pelawat","img":null},
+    {"discipline":"MEKANIKAL","title":"Pendant Installation","location":"Level 3, OT1","img":null},
+    {"discipline":"MEKANIKAL","title":"AVSU & Medical Gas Bracket Installation","location":"Level 1, Paediatric Clinic","img":null},
+    {"discipline":"MEKANIKAL","title":"HDPE Pipe IC Chamber Installation","location":"Infraworks","img":null},
+    {"discipline":"MEKANIKAL","title":"Lift Motor/Panel/Speed Governor Installation","location":"Lift 4","img":null},
+    {"discipline":"MEKANIKAL","title":"Sanitary Pipe High Level Installation","location":"Level 3","img":null},
+    {"discipline":"ELEKTRIKAL","title":"RF Cabin Installation","location":"Level 1, MRI","img":null},
+    {"discipline":"ELEKTRIKAL","title":"ELV Nurse Call Installation on Bed Head","location":"Level 4","img":null},
+    {"discipline":"ELEKTRIKAL","title":"Master Controller / Nurse Call Installation","location":"Level 4","img":null},
+    {"discipline":"ELEKTRIKAL","title":"Cable Pulling","location":"Level 1, Emergency","img":null},
+    {"discipline":"ELEKTRIKAL","title":"Conduit Installation","location":"Admission & Revenue","img":null},
+    {"discipline":"ICT","title":"Testing Cable CCTV, Door Monitoring & Card Access","location":"Level 1 (TCR 1.7)","img":null},
+    {"discipline":"ICT","title":"Manage Cable on Panel","location":"Level 1 (TCR 1.1)","img":null}
+  ],
+  "signatures": [
+    {"role":"Disediakan oleh","name":"Nor Hafipah Binti Mohamed Dasuki","position":"QA/QC Manager","date":"8 Julai 2026"},
+    {"role":"Disemak oleh","name":"Ir. Mohd Lukman Bin Ali","position":"Assistant Project Manager","date":"8 Julai 2026"},
+    {"role":"Diluluskan oleh","name":"Ahmad Safwan Bin Ab. Aziz","position":"Project Manager","date":"8 Julai 2026"}
+  ]
+}
+</script>
+
+<script>
+let data = JSON.parse(document.getElementById('seed-data').textContent);
+let editMode = false;
+let published = false;
+
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function ea(s){ return esc(s).replace(/'/g,'&#39;'); }
+function n2(v){ v=+v||0; return (Math.round(v*100)/100); }
+function fmtRM(v){ v=+v||0; return 'RM ' + v.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function commitPendingEdit(){
+  const el = document.activeElement;
+  if(el && el !== document.body && typeof el.blur === 'function'){
+    const tag = (el.tagName||'').toUpperCase();
+    if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT'){ el.blur(); }
+  }
+}
+
+function toggleEdit(){
+  commitPendingEdit();
+  editMode = !editMode;
+  document.body.classList.toggle('editing', editMode);
+  document.getElementById('editToggle').textContent = editMode ? 'Selesai Edit' : 'Edit Mode';
+  render();
+}
+
+function saveReport(){
+  commitPendingEdit();
+  document.getElementById('seed-data').textContent = JSON.stringify(data);
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeBil = (data.meta.bil||'report').replace(/[^\w.-]/g,'_');
+  a.href = url; a.download = 'Laporan_Kemajuan_Mingguan_' + safeBil + '.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function mergeImportedData(imported){
+  if(imported.meta) data.meta = Object.assign({}, data.meta, imported.meta);
+  if(imported.titles) data.titles = Object.assign({}, data.titles, imported.titles);
+  if(imported.headers) data.headers = Object.assign({}, data.headers, imported.headers);
+  if(imported.sheetConfig) data.sheetConfig = Object.assign({}, data.sheetConfig, imported.sheetConfig);
+  if(Array.isArray(imported.trend)) data.trend = imported.trend;
+  if(imported.tradeSummary) data.tradeSummary = imported.tradeSummary;
+  if(Array.isArray(imported.wbsRows)) data.wbsRows = imported.wbsRows;
+  if(Array.isArray(imported.manpower)) data.manpower = imported.manpower;
+  if(Array.isArray(imported.issues)) data.issues = imported.issues;
+  if(imported.financial) data.financial = Object.assign({}, data.financial, imported.financial);
+  if(Array.isArray(imported.equipment)) data.equipment = imported.equipment;
+  if(Array.isArray(imported.photos)) data.photos = imported.photos;
+  if(Array.isArray(imported.signatures)) data.signatures = imported.signatures;
+  if(Array.isArray(imported.drawing)){
+    data.drawing = imported.drawing.map(function(d){
+      d = d || {};
+      if(Array.isArray(d.zones)){
+        /* older version used zones/status boxes - migrate to the image-gallery schema, zones are dropped */
+        return {area: d.level || d.area || 'LEVEL', title: d.title || '', note: d.note || '', img: d.img || null};
+      }
+      return {area: d.area || d.level || 'LEVEL', title: d.title || '', note: d.note || '', img: d.img || null};
+    });
+  }
+}
+
+function handleImportFile(inputEl){
+  commitPendingEdit();
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const text = e.target.result;
+      const match = text.match(/<script id="seed-data" type="application\/json">([\s\S]*?)<\/script>/);
+      if(!match){ alert('Fail tidak dikenali - tiada data laporan dijumpai dalam fail ini.'); return; }
+      const imported = JSON.parse(match[1]);
+      mergeImportedData(imported);
+      render();
+      alert('Data lama berjaya dimuatkan ke dalam versi baharu ini. Sila semak setiap seksyen sebelum menyimpan.');
+    }catch(err){
+      alert('Gagal membaca fail: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  inputEl.value = '';
+}
+
+function buildPublishedHtml(){
+  const prevEdit = editMode;
+  editMode = false;
+  published = true;
+  render();
+  const appHtml = document.getElementById('app').innerHTML;
+  published = false;
+  editMode = prevEdit;
+  render();
+
+  const styleTag = document.querySelector('style').outerHTML;
+  const safeTitle = esc(data.meta.title || 'Laporan Kemajuan Mingguan');
+  return '<!DOCTYPE html>\n<html lang="ms"><head><meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    + '<title>' + safeTitle + '</title>' + styleTag
+    + '</head><body><div id="app">' + appHtml + '</div>'
+    + '<div id="lightbox" onclick="closeLightbox()"><span class="lb-close">&times;</span><img id="lightbox-img" src=""><div id="lightbox-caption"></div></div>'
+    + '<script>function openLightbox(s,c){if(!s)return;document.getElementById("lightbox-img").src=s;document.getElementById("lightbox-caption").textContent=c||"";document.getElementById("lightbox").classList.add("show");}'
+    + 'function closeLightbox(){document.getElementById("lightbox").classList.remove("show");}</scr' + 'ipt>'
+    + '</body></html>';
+}
+
+function publishReport(){
+  commitPendingEdit();
+  const html = buildPublishedHtml();
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeBil = (data.meta.bil||'report').replace(/[^\w.-]/g,'_');
+  a.href = url; a.download = 'Laporan_Kemajuan_Mingguan_' + safeBil + '_CLIENT.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function openLightbox(src, caption){
+  if(!src) return;
+  document.getElementById('lightbox-img').src = src;
+  const capEl = document.getElementById('lightbox-caption');
+  if(capEl) capEl.textContent = caption || '';
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
+
+/* generic editable title for a section */
+function titleHtml(key){
+  const t = data.titles[key];
+  if(!editMode) return esc(t);
+  return `<input value='${ea(t)}' onchange="data.titles['${key}']=this.value">`;
+}
+function headerCell(group,idx,extraClass){
+  const t = data.headers[group][idx];
+  if(!editMode) return `<th class="${extraClass||''}">${esc(t)}</th>`;
+  return `<th class="${extraClass||''}"><input value='${ea(t)}' onchange="data.headers['${group}'][${idx}]=this.value"></th>`;
+}
+function fld(path){
+  const v = path.split('.').reduce((o,k)=>o[k],data);
+  if(!editMode) return esc(v);
+  return `<input value='${ea(v)}' onchange="setPath('${path}',this.value)">`;
+}
+function setPath(path,value){
+  const parts = path.split('.');
+  let o = data;
+  for(let i=0;i<parts.length-1;i++) o = o[parts[i]];
+  o[parts[parts.length-1]] = value;
+}
+function numInput(arr,i,field,val){
+  if(!editMode) return n2(val);
+  return `<input type="number" step="0.01" value="${n2(val)}" onchange="data.${arr}[${i}].${field}=parseFloat(this.value)||0;render()">`;
+}
+function secNumBadge(num,editOnly){
+  return `<div class="sec-num">${num}</div>` + (editOnly?'<span class="edit-badge no-print">Edit Mode Sahaja</span>':'');
+}
+
+/* ---------- Google Sheet config / refresh panel (edit mode only) ---------- */
+function sheetUrlRow(label, key){
+  const v = data.sheetConfig[key] || '';
+  return `<div class="sp-row"><label>${label}</label><input placeholder="Tampal URL CSV 'Publish to web' di sini" value='${ea(v)}' onchange="data.sheetConfig['${key}']=this.value"></div>`;
+}
+function secSheetPanel(){
+  if(!editMode) return '';
+  return `<div class="sheet-panel">
+    <h3>Sumber Data (Google Sheet) - Pilihan</h3>
+    <div class="hint" style="margin:0 0 8px">Tampal pautan CSV "Publish to web" bagi setiap tab (lihat tab ARAHAN dalam template). Kosongkan mana-mana yang tidak digunakan.</div>
+    ${sheetUrlRow('Trend','trendUrl')}
+    ${sheetUrlRow('WBS','wbsUrl')}
+    ${sheetUrlRow('Manpower','manpowerUrl')}
+    ${sheetUrlRow('Issues','issuesUrl')}
+    ${sheetUrlRow('Financial','financialUrl')}
+    ${sheetUrlRow('Equipment','equipmentUrl')}
+    <div class="sp-actions">
+      <span class="mini-btn" style="padding:6px 12px;background:var(--blue);color:#fff;border-color:var(--blue)" onclick="refreshFromSheets()">Refresh dari Sheet</span>
+      <span id="sheetStatus"></span>
+    </div>
+  </div>`;
+}
+
+/* ---------- CSV parsing + apply-to-data ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[]; let field=''; let inQuotes=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(inQuotes){
+      if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else { inQuotes=false; } }
+      else field+=c;
+    } else {
+      if(c==='"') inQuotes=true;
+      else if(c===','){ row.push(field); field=''; }
+      else if(c==='\r'){ /* skip */ }
+      else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+      else field+=c;
+    }
+  }
+  if(field!=='' || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r=>!(r.length===1 && r[0].trim()===''));
+}
+function csvToObjects(text){
+  const rows = parseCSV(text);
+  if(!rows.length) return [];
+  const headers = rows[0].map(h=>h.trim());
+  return rows.slice(1).map(r=>{
+    const o={};
+    headers.forEach((h,i)=>{ o[h] = r[i]!==undefined ? r[i].trim() : ''; });
+    return o;
+  });
+}
+function applyTrendCSV(text){
+  data.trend = csvToObjects(text).map(r=>({
+    label:r.label||'', schedPhys:parseFloat(r.schedPhys)||0, actPhys:parseFloat(r.actPhys)||0,
+    lateDays:parseInt(r.lateDays)||0, schedFinPct:parseFloat(r.schedFinPct)||0, actFinPct:parseFloat(r.actFinPct)||0,
+    schedFinRM:0, actFinRM:0
+  }));
+}
+function applyWbsCSV(text){
+  data.wbsRows = csvToObjects(text).map(r=>{
+    if((r.type||'').toLowerCase()==='group') return {type:'group', wbs:r.wbs||'', desc:r.desc||'', lookAhead:r.lookAhead||''};
+    return {type:'item', wbs:r.wbs||'', desc:r.desc||'', balanceA:parseFloat(r.balanceA)||0, schedB:parseFloat(r.schedB)||0, actualC:parseFloat(r.actualC)||0};
+  });
+}
+function applyManpowerCSV(text){
+  const rows = csvToObjects(text);
+  const levels = {}; const order = [];
+  rows.forEach(r=>{
+    const lvl = r.level||'';
+    if(!levels[lvl]){ levels[lvl]={level:lvl, trades:[]}; order.push(lvl); }
+    levels[lvl].trades.push({
+      name:r.trade||'', color:(r.color||'blue').toLowerCase(),
+      pct:parseFloat(r.pct)||0, manpower:parseInt(r.manpower)||0,
+      tasks:(r.tasks||'').split('|').map(s=>s.trim()).filter(Boolean).join('\n')
+    });
+  });
+  data.manpower = order.map(l=>levels[l]);
+}
+function applyIssuesCSV(text){
+  data.issues = csvToObjects(text).map((r,i)=>({
+    no:i+1, discipline:r.discipline||'', issue:r.issue||'', action:r.action||'',
+    responsible:r.responsible||'', status:r.status||'', target:r.target||''
+  }));
+}
+function applyFinancialCSV(text){
+  const map={};
+  csvToObjects(text).forEach(r=>{ map[r.key]=r.value; });
+  data.financial = {
+    contractValue: map.contractValue!==undefined ? (parseFloat(map.contractValue)||0) : data.financial.contractValue,
+    ipcNo: map.ipcNo!==undefined ? (parseInt(map.ipcNo)||0) : data.financial.ipcNo,
+    certifiedCumulative: map.certifiedCumulative!==undefined ? (parseFloat(map.certifiedCumulative)||0) : data.financial.certifiedCumulative,
+    pctCertified: map.pctCertified!==undefined ? (parseFloat(map.pctCertified)||0) : data.financial.pctCertified
+  };
+}
+function applyEquipmentCSV(text){
+  data.equipment = csvToObjects(text).map(r=>({item:r.item||'', brand:r.brand||''}));
+}
+function refreshFromSheets(){
+  commitPendingEdit();
+  const cfg = data.sheetConfig;
+  const jobs = [
+    ['trendUrl', applyTrendCSV],
+    ['wbsUrl', applyWbsCSV],
+    ['manpowerUrl', applyManpowerCSV],
+    ['issuesUrl', applyIssuesCSV],
+    ['financialUrl', applyFinancialCSV],
+    ['equipmentUrl', applyEquipmentCSV]
+  ].filter(([key])=>cfg[key]);
+  const statusEl = document.getElementById('sheetStatus');
+  if(!jobs.length){ if(statusEl) statusEl.textContent='Tiada URL diisi.'; return; }
+  if(statusEl) statusEl.textContent = 'Memuat turun...';
+  const errors = [];
+  Promise.all(jobs.map(([key,fn])=>
+    fetch(cfg[key]).then(r=>{ if(!r.ok) throw new Error(key); return r.text(); }).then(fn).catch(()=>errors.push(key))
+  )).then(()=>{
+    render();
+    const el = document.getElementById('sheetStatus');
+    if(el) el.textContent = errors.length ? ('Gagal muat: '+errors.join(', ')+' (semak URL/akses)') : 'Berjaya dikemaskini daripada Google Sheet.';
+  });
+}
+
+/* ---------- cover ---------- */
+function secCover(){
+  return `<div class="cover">
+    <div class="bilno">${editMode?`<input style="text-align:center;font-weight:700" value='${ea(data.meta.bil)}' onchange="data.meta.bil=this.value;render()">`:`Laporan Kemajuan Mingguan (${esc(data.meta.bil)})`}</div>
+    <h1>${editMode?`<textarea style="text-align:center;font-weight:700;font-size:16px" onchange="data.meta.title=this.value;render()">${esc(data.meta.title)}</textarea>`:esc(data.meta.title)}</h1>
+    <div class="sub">${editMode?`Minggu Bil. <input style="width:80px;display:inline-block" value='${ea(data.meta.bil)}' onchange="data.meta.bil=this.value;render()"> | <input style="width:160px;display:inline-block" value='${ea(data.meta.period)}' onchange="data.meta.period=this.value">
+     | Cut-off: <input style="width:120px;display:inline-block" value='${ea(data.meta.cutoff)}' onchange="data.meta.cutoff=this.value">`
+     : `Minggu Bil. ${esc(data.meta.bil)} | ${esc(data.meta.period)} | Tarikh Cut-off: ${esc(data.meta.cutoff)}`}</div>
+  </div>`;
+}
+
+/* ---------- 1. info ---------- */
+function secInfo(num){
+  return `<section id="sec-info"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('info')}</h2></div>
+  <div class="table-wrap"><table><tbody>
+    <tr><th>Minggu Bil.</th><td>${fld('meta.bil')}</td><th>Kontraktor Utama</th><td>${fld('meta.contractor')}</td></tr>
+    <tr><th>Tempoh Pelaporan</th><td>${fld('meta.period')}</td><th>Tarikh Siap Semasa</th><td>${fld('meta.currentCompletion')}</td></tr>
+    <tr><th>Tarikh Cut-off</th><td>${fld('meta.cutoff')}</td><td></td><td></td></tr>
+  </tbody></table></div></section>`;
+}
+
+/* ---------- 2. trend ---------- */
+function secTrend(num){
+  let rows = data.trend.map((t,i)=>{
+    const varPhys = n2(t.actPhys - t.schedPhys);
+    const varFin = n2(t.actFinPct - t.schedFinPct);
+    return `<tr>
+      <td>${editMode?`<input value='${ea(t.label)}' onchange="data.trend[${i}].label=this.value">`:esc(t.label)}</td>
+      <td class="num">${numInput('trend',i,'schedPhys',t.schedPhys)}%</td>
+      <td class="num">${numInput('trend',i,'actPhys',t.actPhys)}%</td>
+      <td class="num ${varPhys<0?'neg':'pos'}">${varPhys}%</td>
+      <td class="num">${editMode?numInput('trend',i,'lateDays',t.lateDays):esc(t.lateDays)}</td>
+      <td class="num">${numInput('trend',i,'schedFinPct',t.schedFinPct)}%</td>
+      <td class="num">${numInput('trend',i,'actFinPct',t.actFinPct)}%</td>
+      <td class="num ${varFin<0?'neg':'pos'}">${varFin}%</td>
+      <td class="row-actions"><span class="mini-btn" onclick="removeTrend(${i})">Buang</span></td>
+    </tr>`;
+  }).join('');
+  return `<section id="sec-trend"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('trend')}</h2></div>
+  <div class="table-wrap"><table>
+   <thead><tr>${headerCell('trend',0)}${headerCell('trend',1,'num')}${headerCell('trend',2,'num')}${headerCell('trend',3,'num')}${headerCell('trend',4,'num')}${headerCell('trend',5,'num')}${headerCell('trend',6,'num')}${headerCell('trend',7,'num')}<th class="row-actions"></th></tr></thead>
+   <tbody>${rows}</tbody>
+  </table></div>
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addTrend()">+ Tambah Minggu</span></div>
+  </section>`;
+}
+function addTrend(){ commitPendingEdit(); data.trend.push({label:'W?? ',schedPhys:0,actPhys:0,lateDays:0,schedFinRM:0,schedFinPct:0,actFinRM:0,actFinPct:0}); render(); }
+function removeTrend(i){ commitPendingEdit(); data.trend.splice(i,1); render(); }
+
+/* ---------- trade summary (table + weekly schedule/actual badges) ---------- */
+const AUTO_TRADE_KEYS = ['architecture','infrastructure','mechanical','electrical & ict'];
+const INFRA_KEYWORDS = ['DRAIN','SEWER','ROADWORK','ROAD WORK','CARPARK','CAR PARK'];
+function isInfraText(s){
+  s = (s||'').toUpperCase();
+  return INFRA_KEYWORDS.some(k=>s.indexOf(k)!==-1);
+}
+function computeTradeActuals(){
+  let architecture=0, mechanical=0, electricalIct=0, infrastructure=0;
+  (data.manpower||[]).forEach(lvl=>{
+    const levelIsInfra = isInfraText(lvl.level);
+    (lvl.trades||[]).forEach(t=>{
+      const mp = +t.manpower||0;
+      const tname = (t.name||'').toUpperCase();
+      const rowIsInfra = levelIsInfra || isInfraText(t.name);
+      if(rowIsInfra){
+        infrastructure += mp;
+        return; /* counted once under Infrastructure only - not also under its trade, to avoid double counting the Total */
+      }
+      if(tname.indexOf('ARCHITECT')!==-1) architecture += mp;
+      else if(tname.indexOf('MECHANICAL')!==-1) mechanical += mp;
+      else if(tname.indexOf('ELECTRICAL')!==-1) electricalIct += mp;
+    });
+  });
+  return {architecture:architecture, infrastructure:infrastructure, mechanical:mechanical, 'electrical & ict':electricalIct};
+}
+function secTradeSummary(num){
+  const ts = data.tradeSummary;
+  const autoActuals = computeTradeActuals();
+  const rowInfo = ts.trades.map(t=>{
+    const key = (t.name||'').trim().toLowerCase();
+    const isAuto = AUTO_TRADE_KEYS.indexOf(key) !== -1;
+    return {t, isAuto, actual: isAuto ? (autoActuals[key]||0) : (+t.actual||0)};
+  });
+  const totalActual = rowInfo.reduce((s,r)=>s+r.actual,0);
+  const totalSchedule = ts.trades.reduce((s,t)=>s+(+t.schedule||0),0);
+  let rows = rowInfo.map((r,i)=>{
+    const t = r.t;
+    return `<div class="ts-row">
+    <div class="ts-trade"><span class="ts-swatch" style="background:${tradeColorHex[t.color]||'#3f6fad'}"></span>${editMode?`<input value='${ea(t.name)}' onchange="data.tradeSummary.trades[${i}].name=this.value;render()">`:esc(t.name)}</div>
+    <div class="ts-num">${r.isAuto ? n2(r.actual) + (editMode?' <span class="ts-auto-tag">(auto)</span>':'') : (editMode?`<input type="number" step="1" value="${n2(t.actual)}" onchange="data.tradeSummary.trades[${i}].actual=parseFloat(this.value)||0;render()">`:n2(r.actual))}</div>
+    <div class="ts-num">${editMode?`<input type="number" step="1" value="${n2(t.schedule)}" onchange="data.tradeSummary.trades[${i}].schedule=parseFloat(this.value)||0;render()">`:(t.schedule?n2(t.schedule):'\u2014')}</div>
+    ${editMode?`<span class="mini-btn" style="margin-left:8px" onclick="removeTradeSummaryRow(${i})">x</span>`:''}
+  </div>`;
+  }).join('');
+  let maxVal = 1;
+  ts.weeks.forEach(w=>{ maxVal = Math.max(maxVal, +w.schedule||0, +w.actual||0); });
+  let weeks = ts.weeks.map((w,i)=>{
+    const schedH = Math.round((+w.schedule||0)/maxVal*100);
+    const actH = Math.round((+w.actual||0)/maxVal*100);
+    return `<div class="ts-col-group">
+    <div class="ts-cols">
+      <div class="ts-col schedule" style="height:${schedH}px"><span class="ts-col-val">${n2(w.schedule)}</span></div>
+      <div class="ts-col actual" style="height:${actH}px"><span class="ts-col-val">${n2(w.actual)}</span></div>
+    </div>
+    <div class="ts-col-label">${editMode?`<input value='${ea(w.label)}' onchange="data.tradeSummary.weeks[${i}].label=this.value">`:esc(w.label)}</div>
+    ${editMode?`<div class="ts-col-edit">
+      <label>J <input type="number" value="${n2(w.schedule)}" onchange="data.tradeSummary.weeks[${i}].schedule=parseFloat(this.value)||0;render()"></label>
+      <label>S <input type="number" value="${n2(w.actual)}" onchange="data.tradeSummary.weeks[${i}].actual=parseFloat(this.value)||0;render()"></label>
+      <span class="mini-btn" onclick="removeTradeSummaryWeek(${i})">Buang</span>
+    </div>`:''}
+  </div>`;
+  }).join('');
+  return `<section id="sec-tradesummary"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('tradeSummary')}</h2></div>
+  ${published?'':'<div class="hint">Lajur Actual untuk Architecture, Infrastructure, Mechanical dan Electrical &amp; ICT dikira secara automatik daripada jumlah tenaga kerja di seksyen Manpower Per Task (Infrastructure = jumlah bagi lantai/kawasan/trade yang namanya mengandungi Drainage, Sewerage, Roadwork atau Carpark). Hanya lajur Schedule diisi secara manual.</div>'}
+  <div class="ts-wrap">
+    <div class="ts-table-col">
+      <div class="ts-head"><span>Trade</span><span>Actual</span><span>Schedule</span></div>
+      ${rows}
+      <div class="ts-row total"><div class="ts-trade">Total</div><div class="ts-num">${n2(totalActual)}</div><div class="ts-num">${totalSchedule?n2(totalSchedule):'\u2014'}</div></div>
+      <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addTradeSummaryRow()">+ Tambah Trade</span></div>
+    </div>
+    <div class="ts-chart-col">
+      <div class="ts-chart">${weeks}</div>
+      <div class="ts-legend"><span><i style="background:var(--navy-dark)"></i>Schedule (weekly)</span><span><i style="background:var(--green)"></i>Actual (weekly)</span></div>
+      <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addTradeSummaryWeek()">+ Tambah Minggu</span></div>
+    </div>
+  </div>
+  </section>`;
+}
+function addTradeSummaryRow(){ commitPendingEdit(); data.tradeSummary.trades.push({name:'Trade baharu',color:'blue',actual:0,schedule:0}); render(); }
+function removeTradeSummaryRow(i){ commitPendingEdit(); data.tradeSummary.trades.splice(i,1); render(); }
+function addTradeSummaryWeek(){ commitPendingEdit(); data.tradeSummary.weeks.push({label:'Week baharu',schedule:0,actual:0}); render(); }
+function removeTradeSummaryWeek(i){ commitPendingEdit(); data.tradeSummary.weeks.splice(i,1); render(); }
+
+/* ---------- 3. work programme (derived from wbsRows) ---------- */
+function secProgramme(num){
+  let body='';
+  data.wbsRows.forEach((r,i)=>{
+    if(r.type==='group'){
+      body += `<div class="prog-group-title">${editMode?`<input value='${ea(r.desc)}' onchange="data.wbsRows[${i}].desc=this.value">`:esc(r.desc||'LAIN-LAIN')}</div>`;
+      body += `<div class="prog-lookahead">${editMode?`<textarea placeholder="Rancangan 2 minggu akan datang..." onchange="data.wbsRows[${i}].lookAhead=this.value">${esc(r.lookAhead||'')}</textarea>`:(r.lookAhead?('Look-ahead: '+esc(r.lookAhead)):'')}</div>`;
+    } else {
+      const sched = n2(r.schedB), act = n2(r.actualC), target = n2(r.balanceA);
+      body += `<div class="prog-row">
+        <div class="prog-label">${esc(r.wbs)} ${esc(r.desc)}</div>
+        <div class="prog-track">
+          <div class="prog-sched" style="width:${Math.min(sched,100)}%"></div>
+          <div class="prog-actual" style="width:${Math.min(act,100)}%"></div>
+          <div class="prog-target" style="left:${Math.min(target,100)}%"></div>
+        </div>
+        <div class="prog-nums">${act}% / ${sched}%</div>
+      </div>`;
+    }
+  });
+  return `<section id="sec-programme"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('programme')}</h2></div>
+  <div class="legend"><span><i style="background:var(--blue)"></i>Sebenar dicapai</span><span><i style="background:#c7d3e0"></i>Sasaran jadual</span><span><i style="background:var(--red);width:2px;border-radius:0"></i>Sasaran keseluruhan (Balance of Work)</span></div>
+  ${published?'':'<div class="hint">Bar ini dijana terus daripada data WBS (kemaskini nombor di seksyen "Kerja Yang Disiapkan Mingguan", yang muncul hanya semasa Edit Mode).</div>'}
+  ${body}
+  </section>`;
+}
+
+/* ---------- 4 (edit-only). WBS raw data table ---------- */
+function secWbs(num){
+  let rows = data.wbsRows.map((r,i)=>{
+    if(r.type==='group'){
+      return `<tr class="group-row"><td><input value='${ea(r.wbs)}' onchange="data.wbsRows[${i}].wbs=this.value"></td>
+        <td colspan="5"><input value='${ea(r.desc)}' onchange="data.wbsRows[${i}].desc=this.value"></td>
+        <td class="row-actions">
+          <span class="mini-btn" onclick="addWbsItem(${i})">+ item</span>
+          <span class="mini-btn" onclick="removeWbsRow(${i})">Buang</span>
+        </td></tr>`;
+    }
+    const diff = n2(r.actualC - r.schedB);
+    const balE = n2(r.balanceA - r.actualC);
+    return `<tr>
+      <td><input value='${ea(r.wbs)}' onchange="data.wbsRows[${i}].wbs=this.value"></td>
+      <td><input value='${ea(r.desc)}' onchange="data.wbsRows[${i}].desc=this.value"></td>
+      <td class="num">${numInput('wbsRows',i,'balanceA',r.balanceA)}%</td>
+      <td class="num">${numInput('wbsRows',i,'schedB',r.schedB)}%</td>
+      <td class="num">${numInput('wbsRows',i,'actualC',r.actualC)}%</td>
+      <td class="num ${diff<0?'neg':'pos'}">${diff}%</td>
+      <td class="num">${balE}%</td>
+      <td class="row-actions"><span class="mini-btn" onclick="removeWbsRow(${i})">Buang</span></td>
+    </tr>`;
+  }).join('');
+  return `<section id="sec-wbs"><div class="sec-title">${secNumBadge(num,true)}<h2>${titleHtml('wbs')}</h2></div>
+  <div class="hint">Jadual ini adalah sumber data untuk carta Work Programme (No. 3) dan hanya kelihatan semasa Edit Mode. Kemaskini di sini setiap minggu.</div>
+  <div class="table-wrap"><table>
+   <thead><tr>${headerCell('wbs',0)}${headerCell('wbs',1)}${headerCell('wbs',2,'num')}${headerCell('wbs',3,'num')}${headerCell('wbs',4,'num')}${headerCell('wbs',5,'num')}${headerCell('wbs',6,'num')}<th class="row-actions"></th></tr></thead>
+   <tbody>${rows}</tbody>
+  </table></div>
+  <div class="add-row-btn no-print"><span class="mini-btn" onclick="addWbsGroup()">+ Tambah Kategori</span></div>
+  </section>`;
+}
+function addWbsGroup(){ commitPendingEdit(); data.wbsRows.push({type:'group',wbs:'',desc:'KATEGORI BAHARU',lookAhead:''}); render(); }
+function addWbsItem(afterIdx){ commitPendingEdit(); data.wbsRows.splice(afterIdx+1,0,{type:'item',wbs:'',desc:'Item baharu',balanceA:0,schedB:0,actualC:0}); render(); }
+function removeWbsRow(i){ commitPendingEdit(); data.wbsRows.splice(i,1); render(); }
+
+/* ---------- 4/5. manpower per task (with donut chart) ---------- */
+const tradeColorHex = {blue:'#3f6fad',orange:'#e08a3c',green:'#4f9d69',lightblue:'#6a93c9'};
+function donutSVG(pct,colorHex){
+  pct = Math.max(0,Math.min(100,+pct||0));
+  const r=40, c=2*Math.PI*r;
+  const offset = c*(1-pct/100);
+  return `<svg width="88" height="88" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="#e9edf1" stroke-width="11"/>
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="${colorHex}" stroke-width="11"
+      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
+      stroke-linecap="round" transform="rotate(-90 50 50)"/>
+    <text x="50" y="56" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2a36">${Math.round(pct)}%</text>
+  </svg>`;
+}
+function secManpower(num){
+  let blocks = data.manpower.map((lvl,li)=>{
+    let cards = lvl.trades.map((t,ti)=>{
+      return `<div class="trade-card">
+        <div class="trade-name-row">
+          <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value">`:esc(t.name)}</span>
+        </div>
+        <div class="donut-wrap">${donutSVG(t.pct, tradeColorHex[t.color]||'#3f6fad')}</div>
+        ${editMode?`<div style="text-align:center;margin-bottom:4px;">% <input type="number" step="1" style="width:60px;display:inline-block;text-align:center" value="${n2(t.pct)}" onchange="data.manpower[${li}].trades[${ti}].pct=parseFloat(this.value)||0;render()"></div>`:''}
+        <div class="trade-tasks">${editMode?`<textarea onchange="data.manpower[${li}].trades[${ti}].tasks=this.value">${esc(t.tasks)}</textarea>`:esc(t.tasks).split('\n').map(x=>'&bull; '+x).join('<br>')}</div>
+        <div class="trade-mp"><span>Jumlah Tenaga Kerja</span><span>${editMode?`<input type="number" step="1" style="width:60px;display:inline-block;text-align:right" value="${n2(t.manpower)}" onchange="data.manpower[${li}].trades[${ti}].manpower=parseFloat(this.value)||0;render()">`:n2(t.manpower)}</span></div>
+        ${editMode?`<div class="row-actions" style="display:block;text-align:right;margin-top:6px"><span class="mini-btn" onclick="removeTrade(${li},${ti})">Buang trade</span></div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="level-block">
+      <div class="level-head">
+        <span>${editMode?`<input value='${ea(lvl.level)}' onchange="data.manpower[${li}].level=this.value">`:esc(lvl.level)}</span>
+        ${editMode?`<span class="row-actions" style="display:inline-flex;gap:6px">
+          <span class="mini-btn" onclick="addTrade(${li})">+ trade</span>
+          <span class="mini-btn" onclick="removeLevel(${li})">Buang lantai</span></span>`:''}
+      </div>
+      <div class="trade-cards">${cards}</div>
+    </div>`;
+  }).join('');
+  return `<section id="sec-manpower"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('manpower')}</h2></div>
+  ${blocks}
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
+  </section>`;
+}
+function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',pct:0,manpower:0,tasks:''},{name:'Mechanical',color:'orange',pct:0,manpower:0,tasks:''},{name:'Electrical',color:'green',pct:0,manpower:0,tasks:''}]}); render(); }
+function removeLevel(i){ commitPendingEdit(); data.manpower.splice(i,1); render(); }
+function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',pct:0,manpower:0,tasks:''}); render(); }
+function removeTrade(li,ti){ commitPendingEdit(); data.manpower[li].trades.splice(ti,1); render(); }
+
+/* ---------- 6. progress by drawing layout (image gallery + lightbox caption) ---------- */
+function secDrawing(num){
+  const areas = [];
+  data.drawing.forEach(d=>{ if(!areas.includes(d.area)) areas.push(d.area); });
+  let out = areas.map(area=>{
+    let cards = data.drawing.map((d,i)=>({d,i})).filter(x=>x.d.area===area).map(({d,i})=>{
+      const caption = ea((d.title||'') + (d.note ? ' \u2014 ' + d.note : ''));
+      return `<div class="photo-card">
+        <div class="photo-img">${d.img?`<img src="${d.img}" onclick="openLightbox('${d.img}','${caption}')">`:'Tiada gambar'}</div>
+        ${editMode?`<div class="pc-body">
+          <div><input value='${ea(d.area)}' onchange="data.drawing[${i}].area=this.value;render()" title="Kawasan/Lantai"></div>
+          <div><input value='${ea(d.title)}' onchange="data.drawing[${i}].title=this.value" placeholder="Tajuk"></div>
+          <div><textarea onchange="data.drawing[${i}].note=this.value" placeholder="Keterangan (dipaparkan bila gambar dibesarkan)">${esc(d.note)}</textarea></div>
+        </div>
+        <label class="upload-btn">Muat naik gambar/pelan<input type="file" accept="image/*" style="display:none" onchange="handleDrawingUpload(${i},this)"></label>
+        <div class="row-actions" style="display:block;text-align:center;padding:4px;"><span class="mini-btn" onclick="removeDrawing(${i})">Buang</span></div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="photo-disc-title">${esc(area)}</div><div class="photo-grid">${cards}</div>`;
+  }).join('');
+  return `<section id="sec-drawing"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('drawing')}</h2></div>
+  ${published?'':'<div class="hint">Muat naik gambar/pelan susun atur di sini. Tajuk &amp; keterangan hanya dipaparkan apabila gambar dibesarkan (klik) - tidak kelihatan pada thumbnail.</div>'}
+  ${out}
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addDrawing()">+ Tambah Gambar/Pelan</span></div>
+  </section>`;
+}
+function addDrawing(){ commitPendingEdit(); data.drawing.push({area:'LEVEL BAHARU', title:'', note:'', img:null}); render(); }
+function removeDrawing(i){ commitPendingEdit(); data.drawing.splice(i,1); render(); }
+function handleDrawingUpload(i, inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){ data.drawing[i].img = e.target.result; render(); };
+  reader.readAsDataURL(file);
+}
+
+/* ---------- 7. issues ---------- */
+function secIssues(num){
+  let rows = data.issues.map((r,i)=>`<tr>
+    <td class="num">${r.no}</td>
+    <td>${editMode?`<input value='${ea(r.discipline)}' onchange="data.issues[${i}].discipline=this.value">`:esc(r.discipline)}</td>
+    <td>${editMode?`<textarea onchange="data.issues[${i}].issue=this.value">${esc(r.issue)}</textarea>`:esc(r.issue)}</td>
+    <td>${editMode?`<textarea onchange="data.issues[${i}].action=this.value">${esc(r.action)}</textarea>`:esc(r.action)}</td>
+    <td>${editMode?`<input value='${ea(r.responsible)}' onchange="data.issues[${i}].responsible=this.value">`:esc(r.responsible)}</td>
+    <td>${editMode?`<textarea onchange="data.issues[${i}].status=this.value">${esc(r.status)}</textarea>`:esc(r.status)}</td>
+    <td>${editMode?`<input value='${ea(r.target)}' onchange="data.issues[${i}].target=this.value">`:esc(r.target)}</td>
+    <td class="row-actions"><span class="mini-btn" onclick="removeIssue(${i})">Buang</span></td>
+  </tr>`).join('');
+  return `<section id="sec-issues"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('issues')}</h2></div>
+  <div class="table-wrap"><table>
+   <thead><tr>${headerCell('issues',0)}${headerCell('issues',1)}${headerCell('issues',2)}${headerCell('issues',3)}${headerCell('issues',4)}${headerCell('issues',5)}${headerCell('issues',6)}<th class="row-actions"></th></tr></thead>
+   <tbody>${rows}</tbody>
+  </table></div>
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addIssue()">+ Tambah Isu</span></div>
+  </section>`;
+}
+function addIssue(){ commitPendingEdit(); data.issues.push({no:data.issues.length+1,discipline:'',issue:'',action:'',responsible:'',status:'',target:''}); render(); }
+function removeIssue(i){ commitPendingEdit(); data.issues.splice(i,1); data.issues.forEach((r,idx)=>r.no=idx+1); render(); }
+
+/* ---------- 8. financial ---------- */
+function secFinancial(num){
+  const f = data.financial;
+  const h = data.headers.financial;
+  return `<section id="sec-financial"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('financial')}</h2></div>
+  <div class="table-wrap"><table><tbody>
+    <tr><th>${editMode?`<input value='${ea(h[0])}' onchange="data.headers.financial[0]=this.value">`:esc(h[0])}</th><td class="num">${editMode?`<input type="number" step="0.01" value="${n2(f.contractValue)}" onchange="data.financial.contractValue=parseFloat(this.value)||0;render()">`:fmtRM(f.contractValue)}</td></tr>
+    <tr><th>${editMode?`<input value='${ea(h[1])}' onchange="data.headers.financial[1]=this.value">`:esc(h[1])}</th><td class="num">${editMode?`<input type="number" value="${f.ipcNo}" onchange="data.financial.ipcNo=parseInt(this.value)||0;render()">`:f.ipcNo}</td></tr>
+    <tr><th>${editMode?`<input value='${ea(h[2])}' onchange="data.headers.financial[2]=this.value">`:esc(h[2])}</th><td class="num">${editMode?`<input type="number" step="0.01" value="${n2(f.certifiedCumulative)}" onchange="data.financial.certifiedCumulative=parseFloat(this.value)||0;render()">`:fmtRM(f.certifiedCumulative)}</td></tr>
+    <tr><th>${editMode?`<input value='${ea(h[3])}' onchange="data.headers.financial[3]=this.value">`:esc(h[3])}</th><td class="num">${editMode?`<input type="number" step="0.01" value="${n2(f.pctCertified)}" onchange="data.financial.pctCertified=parseFloat(this.value)||0;render()">`:n2(f.pctCertified)}%</td></tr>
+  </tbody></table></div></section>`;
+}
+
+/* ---------- 9. equipment ---------- */
+function secEquipment(num){
+  let rows = data.equipment.map((e,i)=>`<tr>
+    <td>${editMode?`<input value='${ea(e.item)}' onchange="data.equipment[${i}].item=this.value">`:esc(e.item)}</td>
+    <td>${editMode?`<input value='${ea(e.brand)}' onchange="data.equipment[${i}].brand=this.value">`:esc(e.brand)}</td>
+    <td class="row-actions"><span class="mini-btn" onclick="removeEquip(${i})">Buang</span></td>
+  </tr>`).join('');
+  return `<section id="sec-equipment"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('equipment')}</h2></div>
+  <div class="table-wrap"><table><thead><tr>${headerCell('equipment',0)}${headerCell('equipment',1)}<th class="row-actions"></th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addEquip()">+ Tambah Item</span></div>
+  </section>`;
+}
+function addEquip(){ commitPendingEdit(); data.equipment.push({item:'',brand:''}); render(); }
+function removeEquip(i){ commitPendingEdit(); data.equipment.splice(i,1); render(); }
+
+/* ---------- 10. photos (fixed for print: real <img>, not CSS background) ---------- */
+function secPhotos(num){
+  const discOrder = [];
+  data.photos.forEach(p=>{ if(!discOrder.includes(p.discipline)) discOrder.push(p.discipline); });
+  let out = discOrder.map(disc=>{
+    let cards = data.photos.map((p,i)=>({p,i})).filter(x=>x.p.discipline===disc).map(({p,i})=>{
+      const caption = ea((p.title||'') + (p.location ? ' \u2014 ' + p.location : ''));
+      return `<div class="photo-card">
+        <div class="photo-img">${p.img?`<img src="${p.img}" onclick="openLightbox('${p.img}','${caption}')">`:'Tiada gambar'}</div>
+        ${editMode?`<div class="pc-body">
+          <div><input value='${ea(p.discipline)}' onchange="data.photos[${i}].discipline=this.value;render()" title="Disiplin"></div>
+          <div><input value='${ea(p.title)}' onchange="data.photos[${i}].title=this.value" placeholder="Tajuk"></div>
+          <div><input value='${ea(p.location)}' onchange="data.photos[${i}].location=this.value" placeholder="Lokasi"></div>
+        </div>
+        <label class="upload-btn">Muat naik gambar<input type="file" accept="image/*" style="display:none" onchange="handlePhotoUpload(${i},this)"></label>
+        <div class="row-actions" style="display:block;text-align:center;padding:4px;"><span class="mini-btn" onclick="removePhoto(${i})">Buang</span></div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="photo-disc-title">${esc(disc)}</div><div class="photo-grid">${cards}</div>`;
+  }).join('');
+  return `<section id="sec-photos"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('photos')}</h2></div>
+  ${published?'':'<div class="hint">Tajuk &amp; lokasi hanya dipaparkan apabila gambar dibesarkan (klik) - tidak kelihatan pada thumbnail.</div>'}
+  ${out}
+  <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="addPhoto()">+ Tambah Gambar</span></div>
+  </section>`;
+}
+function addPhoto(){ commitPendingEdit(); data.photos.push({discipline:'LAIN-LAIN',title:'Tajuk baharu',location:'Lokasi',img:null}); render(); }
+function removePhoto(i){ commitPendingEdit(); data.photos.splice(i,1); render(); }
+function handlePhotoUpload(i, inputEl){
+  const file = inputEl.files && inputEl.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){ data.photos[i].img = e.target.result; render(); };
+  reader.readAsDataURL(file);
+}
+
+/* ---------- 11. signatures ---------- */
+function secSign(num){
+  let boxes = data.signatures.map((s,i)=>`<div class="sign-box">
+    <div class="sign-role">${editMode?`<input value='${ea(s.role)}' onchange="data.signatures[${i}].role=this.value">`:esc(s.role)}</div>
+    <div class="sign-name">${editMode?`<input value='${ea(s.name)}' onchange="data.signatures[${i}].name=this.value">`:esc(s.name)}</div>
+    <div class="sign-position">${editMode?`<input value='${ea(s.position||'')}' placeholder="Jawatan" onchange="data.signatures[${i}].position=this.value">`:esc(s.position||'')}</div>
+    <div class="sign-date">${editMode?`<input value='${ea(s.date)}' onchange="data.signatures[${i}].date=this.value">`:esc(s.date)}</div>
+  </div>`).join('');
+  return `<section id="sec-sign"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('sign')}</h2></div>
+  <div class="sign-grid">${boxes}</div>
+  </section>`;
+}
+
+const SECTIONS = [
+  {key:'info', editOnly:false, fn:secInfo},
+  {key:'trend', editOnly:false, fn:secTrend},
+  {key:'tradeSummary', editOnly:false, fn:secTradeSummary},
+  {key:'programme', editOnly:false, fn:secProgramme},
+  {key:'wbs', editOnly:true, fn:secWbs},
+  {key:'manpower', editOnly:false, fn:secManpower},
+  {key:'drawing', editOnly:false, fn:secDrawing},
+  {key:'issues', editOnly:false, fn:secIssues},
+  {key:'financial', editOnly:false, fn:secFinancial},
+  {key:'equipment', editOnly:false, fn:secEquipment},
+  {key:'photos', editOnly:false, fn:secPhotos},
+  {key:'sign', editOnly:false, fn:secSign}
+];
+
+function render(){
+  let num = 0;
+  let html = secCover() + secSheetPanel();
+  SECTIONS.forEach(s=>{
+    if(s.editOnly && !editMode) return;
+    num++;
+    html += s.fn(num);
+  });
+  document.getElementById('app').innerHTML = html;
+}
+
+document.body.classList.remove('editing');
+editMode = false;
+render();
+
+function fitBottomPadding(){
+  const toolbar = document.getElementById('toolbar');
+  const app = document.getElementById('app');
+  if(toolbar && app){
+    app.style.paddingBottom = (toolbar.offsetHeight + 40) + 'px';
+  }
+}
+fitBottomPadding();
+window.addEventListener('load', fitBottomPadding);
+window.addEventListener('resize', fitBottomPadding);
+</script>
+</body>
+</html>
