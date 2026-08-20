@@ -80,10 +80,7 @@
 .tc-add select{font-size:11px;padding:4px;}
 .tc-add .mini-btn{font-size:12px;padding:4px 10px;}
 .tdel,.tc-lock{font-size:14px;cursor:pointer;}
-    .obw-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
-  .obw-stat{background:#eef6fb;border:1px solid #bfdbfe;border-radius:8px;padding:6px 14px;font-size:11px;color:var(--ink-soft);}
-  .obw-stat b{display:block;font-size:18px;color:var(--navy-dark);}
-  .mp-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0 2px;}
+    .mp-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0 2px;}
   .mp-table th{text-align:left;color:var(--ink-soft);font-weight:600;border-bottom:1px solid var(--line);padding:2px 3px;font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;}
   .mp-table td{padding:2px 3px;border-bottom:1px dotted #e8edf2;vertical-align:middle;text-align:left;}
   .mp-table input[type=text]{font-size:11px;}
@@ -2331,9 +2328,6 @@ function tradeTasksOf(t){
 }
 
 function secManpower(num){
-  let totalMp = 0, obwSum = 0, obwN = 0;
-  (data.manpower||[]).forEach(l=>(l.trades||[]).forEach(t=>{ totalMp += tradeMpOf(t); obwSum += tradePctOf(t); obwN++; }));
-  const obw = obwN ? (obwSum/obwN) : 0;
   let blocks = (data.manpower||[]).map((lvl,li)=>{
     let cards = (lvl.trades||[]).map((t,ti)=>{
       const pct = tradePctOf(t);
@@ -2397,11 +2391,6 @@ function secManpower(num){
     </div>`;
   }).join('');
   return `<section id="sec-manpower"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('manpower')}</h2></div>
-  <div class="obw-strip">
-    <div class="obw-stat">Jumlah Baki Kerja Keseluruhan<b>${obw.toFixed(2)}%</b></div>
-    <div class="obw-stat">Jumlah Tenaga Kerja Semasa<b>${totalMp}</b></div>
-  </div>
-  ${published?'':'<div class="hint">Setiap trade memaparkan dua donat: <b>Minggu Lepas</b> (kiri) dan <b>Semasa</b> (kanan). % ialah baki kerja yang tinggal (0% = siap) &mdash; kedua-dua nilai dimasukkan secara manual. Setiap trade mempunyai <b>Tetapan Lajur</b> sendiri untuk tambah / buang / sorot lajur (bebas antara trade).</div>'}
   ${blocks}
   <div class="add-row-btn no-print" ${editMode?'':'style="display:none"'}><span class="mini-btn" onclick="copyPctToPrev()">&#8594; Salin % Semasa ke Minggu Lepas</span> <span class="mini-btn" onclick="addLevel()">+ Tambah Lantai/Zon</span></div>
   </section>`;
