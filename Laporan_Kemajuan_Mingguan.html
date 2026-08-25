@@ -59,6 +59,8 @@
   .trade-card{padding:8px 10px;border-right:1px solid var(--line);text-align:center;box-sizing:border-box;overflow:hidden;min-width:0;}
   .trade-card:last-child{border-right:none;}
   .trade-name-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;margin-bottom:4px;text-align:left;}
+  .trade-disc{margin:2px 0 6px;padding:4px 6px;background:#f0f4f8;border:1px solid var(--line);border-radius:6px;font-size:11px;text-align:left;}
+  .trade-disc select{font-size:11px;padding:2px 6px;border:1px solid var(--line);border-radius:4px;background:#fff;}
   .donut-wrap{display:flex;justify-content:center;margin:2px 0 6px;}
   .donut-pair{display:flex;justify-content:center;gap:10px;}
   .donut-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
@@ -2187,40 +2189,81 @@ function addTrend(){ commitPendingEdit(); data.trend.push({label:'W?? ',schedPhy
 function removeTrend(i){ commitPendingEdit(); data.trend.splice(i,1); render(); }
 
 /* ---------- trade summary (table + weekly schedule/actual badges) ---------- */
-const AUTO_TRADE_KEYS = ['architecture','infrastructure','mechanical','electrical & ict'];
-const INFRA_KEYWORDS = ['DRAIN','SEWER','ROADWORK','ROAD WORK','CARPARK','CAR PARK'];
+const AUTO_TRADE_KEYS = ['architecture','infrastructure','mechanical','electrical & ict','others'];
+const INFRA_KEYWORDS = ['DRAIN','SEWER','ROADWORK','ROAD WORK','CARPARK','CAR PARK','INFRASTRUCTURE','INFRA '];
 function isInfraText(s){
   s = (s||'').toUpperCase();
   return INFRA_KEYWORDS.some(k=>s.indexOf(k)!==-1);
 }
+/* Disiplin yang boleh dipilih untuk setiap trade dalam seksyen Manpower.
+   'others' ialah bakul serahan (catch-all) supaya tiada tenaga kerja hilang daripada jumlah. */
+const TRADE_DISCIPLINES = [
+  {key:'architecture',   label:'Architecture'},
+  {key:'infrastructure', label:'Infrastructure'},
+  {key:'mechanical',     label:'Mechanical'},
+  {key:'electrical & ict', label:'Electrical & ICT'},
+  {key:'others',         label:'Lain-lain (Others)'}
+];
+/* Klasifikasi sesuatu trade: medan 'discipline' eksplisit diutamakan;
+   jika tiada (fail lama), jatuh kepada kata kunci nama — peraturan sama seperti sebelum ini
+   tetapi 'others' sebagai penutup supaya tiada trade tercicir daripada jumlah. */
+function disciplineOf(levelName, t){
+  if(t.discipline && TRADE_DISCIPLINES.some(d=>d.key===t.discipline)) return t.discipline;
+  /* legacy fallback (fail v1.0.0 tanpa medan discipline) */
+  const levelIsInfra = isInfraText(levelName);
+  const tname = (t.name||'').toUpperCase();
+  if(levelIsInfra || isInfraText(t.name)) return 'infrastructure';
+  if(tname.indexOf('ARCHITECT')!==-1) return 'architecture';
+  if(tname.indexOf('MECHANICAL')!==-1) return 'mechanical';
+  if(tname.indexOf('ELECTRICAL')!==-1) return 'electrical & ict';
+  return 'others';
+}
 function computeTradeActuals(){
-  let architecture=0, mechanical=0, electricalIct=0, infrastructure=0;
+  const sums = {architecture:0, infrastructure:0, mechanical:0, 'electrical & ict':0, others:0};
   (data.manpower||[]).forEach(lvl=>{
-    const levelIsInfra = isInfraText(lvl.level);
     (lvl.trades||[]).forEach(t=>{
       const mp = tradeMpOf(t);
-      const tname = (t.name||'').toUpperCase();
-      const rowIsInfra = levelIsInfra || isInfraText(t.name);
-      if(rowIsInfra){
-        infrastructure += mp;
-        return; /* counted once under Infrastructure only - not also under its trade, to avoid double counting the Total */
-      }
-      if(tname.indexOf('ARCHITECT')!==-1) architecture += mp;
-      else if(tname.indexOf('MECHANICAL')!==-1) mechanical += mp;
-      else if(tname.indexOf('ELECTRICAL')!==-1) electricalIct += mp;
+      const d = disciplineOf(lvl.level, t);
+      sums[d] += mp;
     });
   });
-  return {architecture:architecture, infrastructure:infrastructure, mechanical:mechanical, 'electrical & ict':electricalIct};
+  return sums;
+}
+/* Pastikan setiap baris Trade Summary mempunyai 'key' & 'auto' yang stabil.
+   'key' ialah identiti tetap baris (tidak berubah bila nama diedit) dan
+   'auto' menentukan sama ada lajur Actual dikira daripada seksyen Manpower.
+   Fail lama (v1.0.0) tiada kedua-dua medan — backfill: nama sepadan disiplin
+   -> baris auto; nama lain -> baris manual dengan key unik. */
+function ensureTradeSummaryKeys(){
+  const ts = data.tradeSummary;
+  if(!ts || !Array.isArray(ts.trades)) return;
+  const used = {};
+  ts.trades.forEach(t=>{ if(t.key) used[t.key]=true; });
+  ts.trades.forEach(t=>{
+    if(!t.key){
+      const nameKey = (t.name||'').trim().toLowerCase();
+      if(AUTO_TRADE_KEYS.indexOf(nameKey)!==-1 && !used[nameKey]){ t.key = nameKey; }
+      else {
+        let k; do { k = 'trade' + Math.random().toString(36).slice(2,8); } while(used[k]);
+        t.key = k;
+      }
+      used[t.key] = true;
+    }
+    if(typeof t.auto !== 'boolean') t.auto = AUTO_TRADE_KEYS.indexOf(t.key)!==-1;
+  });
 }
 function secTradeSummary(num){
   const ts = data.tradeSummary;
+  ensureTradeSummaryKeys();
   const autoActuals = computeTradeActuals();
+  const othersVal = autoActuals.others||0;
   const rowInfo = ts.trades.map(t=>{
-    const key = (t.name||'').trim().toLowerCase();
-    const isAuto = AUTO_TRADE_KEYS.indexOf(key) !== -1;
-    return {t, isAuto, actual: isAuto ? (autoActuals[key]||0) : (+t.actual||0)};
+    /* auto ditentukan oleh flag 'auto' + key stabil — BUKAN oleh nama baris,
+       jadi menukar nama baris tidak lagi memutuskan pautan auto. */
+    const isAuto = !!t.auto && Object.prototype.hasOwnProperty.call(autoActuals, t.key);
+    return {t, isAuto, actual: isAuto ? (autoActuals[t.key]||0) : (+t.actual||0)};
   });
-  const totalActual = rowInfo.reduce((s,r)=>s+r.actual,0);
+  const totalActual = rowInfo.reduce((s,r)=>s+r.actual,0) + othersVal;
   const totalSchedule = ts.trades.reduce((s,t)=>s+(+t.schedule||0),0);
   let rows = rowInfo.map((r,i)=>{
     const t = r.t;
@@ -2231,6 +2274,15 @@ function secTradeSummary(num){
     ${editMode?`<span class="mini-btn" style="margin-left:8px" onclick="removeTradeSummaryRow(${i})">x</span>`:''}
   </div>`;
   }).join('');
+  /* Baris Lain-lain (Others) — bakul serahan. Dipaparkan bila ada nilai supaya
+     SETIAP tenaga kerja sentiasa kelihatan dan dikira di dalam Total. */
+  if(othersVal > 0){
+    rows += `<div class="ts-row">
+    <div class="ts-trade"><span class="ts-swatch" style="background:#9aa7b5"></span>Lain-lain (Others)</div>
+    <div class="ts-num">${n2(othersVal)}${editMode?' <span class="ts-auto-tag">(auto)</span>':''}</div>
+    <div class="ts-num">&#8212;</div>
+  </div>`;
+  }
   let maxVal = 1;
   ts.weeks.forEach(w=>{ maxVal = Math.max(maxVal, +w.schedule||0, +w.actual||0); });
   let weeks = ts.weeks.map((w,i)=>{
@@ -2250,7 +2302,7 @@ function secTradeSummary(num){
   </div>`;
   }).join('');
   return `<section id="sec-tradesummary"><div class="sec-title">${secNumBadge(num)}<h2>${titleHtml('tradeSummary')}</h2></div>
-  ${published?'':'<div class="hint">Lajur Actual untuk Architecture, Infrastructure, Mechanical dan Electrical &amp; ICT dikira secara automatik daripada jumlah tenaga kerja di seksyen Manpower Per Task (Infrastructure = jumlah bagi lantai/kawasan/trade yang namanya mengandungi Drainage, Sewerage, Roadwork atau Carpark). Hanya lajur Schedule diisi secara manual.</div>'}
+  ${published?'':'<div class="hint">Lajur Actual bagi Architecture, Infrastructure, Mechanical dan Electrical &amp; ICT dikira secara automatik daripada jumlah tenaga kerja di seksyen Manpower Per Task. Setiap trade dalam Manpower mempunyai pilihan <b>Disiplin</b> — tenaga kerja dikira mengikut disiplin tersebut, jadi menambah / membuang / menamakan semula tidak akan menyebabkan jumlah hilang. Trade yang disiplinnya &quot;Lain-lain&quot; dipaparkan sebagai baris Lain-lain (Others). Fail lama tanpa pilihan Disiplin dijangka menggunakan kata kunci nama (Drainage, Sewerage, Roadwork, Carpark) seperti sebelum ini. Hanya lajur Schedule diisi secara manual.</div>'}
   <div class="ts-wrap">
     <div class="ts-table-col">
       <div class="ts-head"><span>Trade</span><span>Actual</span><span>Schedule</span></div>
@@ -2266,8 +2318,18 @@ function secTradeSummary(num){
   </div>
   </section>`;
 }
-function addTradeSummaryRow(){ commitPendingEdit(); data.tradeSummary.trades.push({name:'Trade baharu',color:'blue',actual:0,schedule:0}); render(); }
-function removeTradeSummaryRow(i){ commitPendingEdit(); data.tradeSummary.trades.splice(i,1); render(); }
+function addTradeSummaryRow(){ commitPendingEdit(); const used = (data.tradeSummary.trades||[]).map(t=>t.key); let k; do { k = 'trade' + Math.random().toString(36).slice(2,8); } while(used.includes(k)); data.tradeSummary.trades.push({name:'Trade baharu',color:'blue',actual:0,schedule:0,key:k,auto:false}); render(); }
+function removeTradeSummaryRow(i){
+  commitPendingEdit();
+  const ts = data.tradeSummary;
+  if(!ts || !ts.trades) return;
+  const removed = ts.trades[i];
+  /* Jika baris yang dibuang ialah auto (key sepadan disiplin), kita KEMASKINIKAN lagi flag auto pada baris lain yang sepadan
+     supaya tiada auto hilang tanpa sepengetahuan. Contoh: user padam baris Infrastructure auto, then later tambah baris "Infrastructure" baharu —
+     baris baharu akan auto kerana key 'infrastructure' telah dibebaskan. */
+  ts.trades.splice(i,1);
+  render();
+}
 function addTradeSummaryWeek(){ commitPendingEdit(); data.tradeSummary.weeks.push({label:'Week baharu',schedule:0,actual:0}); render(); }
 function removeTradeSummaryWeek(i){ commitPendingEdit(); data.tradeSummary.weeks.splice(i,1); render(); }
 
@@ -2377,6 +2439,11 @@ function normalizeManpowerData(){
     if(t.pct===undefined || t.pct===null) t.pct = tradePctOfAvg(t); /* one-time migration from auto version */
     (t.tasks||[]).forEach(function(tk){ if(tk.pct===undefined) tk.pct=0; if(tk.manpower===undefined) tk.manpower=0; });
     tradeColsOf(t); /* ensure each trade has its own cols */
+    /* Backfill discipline for old files (v1.0.0) — use same fallback logic so
+       existing files open with identical classification, then let user adjust. */
+    if(!t.discipline || !TRADE_DISCIPLINES.some(d=>d.key===t.discipline)){
+      t.discipline = disciplineOf(l.level, t);
+    }
   }); });
 }
 /* toggle / add / remove operate on a specific trade's cols */
@@ -2444,11 +2511,12 @@ function secManpower(num){
         </table>`;
       }
       return `<div class="trade-card">
-        <div class="trade-name-row">
-          <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value">`:esc(t.name)}</span>
-          <span class="trade-pct-box" title="Baki kerja % (manual)">${n2(pct)}%</span>
-        </div>
-        <div class="donut-wrap"><div class="donut-pair">
+              <div class="trade-name-row">
+                <span>${editMode?`<input value='${ea(t.name)}' onchange="data.manpower[${li}].trades[${ti}].name=this.value;render()">`:esc(t.name)}</span>
+                <span class="trade-pct-box" title="Baki kerja % (manual)">${n2(pct)}%</span>
+              </div>
+              ${editMode?`<div class="trade-disc"><b>Disiplin:</b> <select onchange="data.manpower[${li}].trades[${ti}].discipline=this.value;render()">${TRADE_DISCIPLINES.map(d=>`<option value="${d.key}"${t.discipline===d.key?' selected':''}>${d.label}</option>`).join('')}</select></div>`:''}
+              <div class="donut-wrap"><div class="donut-pair">
           <div class="donut-item">
             <div class="donut-mini-label">Minggu Lepas</div>
             ${donutSVG(t.prevPct, lightenHex(tradeColorHex[t.color]||'#3f6fad', .55))}
@@ -2469,7 +2537,7 @@ function secManpower(num){
     }).join('');
     return `<div class="level-block">
       <div class="level-head">
-        <span>${editMode?`<input value='${ea(lvl.level)}' onchange="data.manpower[${li}].level=this.value">`:esc(lvl.level)}</span>
+        <span>${editMode?`<input value='${ea(lvl.level)}' onchange="data.manpower[${li}].level=this.value;render()">`:esc(lvl.level)}</span>
         ${editMode?`<span class="row-actions" style="display:inline-flex;gap:6px">
           <span class="mini-btn" onclick="addTrade(${li})">+ trade</span>
           <span class="mini-btn" onclick="removeLevel(${li})">Buang lantai</span></span>`:''}
@@ -2501,9 +2569,9 @@ function buildTradeColManager(li,ti){
     '<select id="tcNewType_'+li+'_'+ti+'"><option value="text">Teks</option><option value="number">Nombor</option></select>'+
     '<span class="mini-btn" onclick="addTradeCol('+li+','+ti+')">+ Tambah</span></span></div></div>';
 }
-/* old master toggleTaskCol/removeTaskCol/addTaskCol removed - now per-trade */function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols()},{name:'Mechanical',color:'orange',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols()},{name:'Electrical',color:'green',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols()}]}); render(); }
+/* old master toggleTaskCol/removeTaskCol/addTaskCol removed - now per-trade */function addLevel(){ commitPendingEdit(); data.manpower.push({level:'LEVEL BAHARU',trades:[{name:'Architect',color:'blue',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols(),discipline:'architecture'},{name:'Mechanical',color:'orange',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols(),discipline:'mechanical'},{name:'Electrical',color:'green',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols(),discipline:'electrical & ict'}]}); render(); }
 function removeLevel(i){ commitPendingEdit(); data.manpower.splice(i,1); render(); }
-function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols()}); render(); }
+function addTrade(li){ commitPendingEdit(); data.manpower[li].trades.push({name:'Trade baharu',color:'blue',prevPct:0,pct:0,tasks:[],cols:cloneDefaultCols(),discipline:'others'}); render(); }
 function removeTrade(li,ti){ commitPendingEdit(); data.manpower[li].trades.splice(ti,1); render(); }
 function addTask(li,ti){ commitPendingEdit(); var t=data.manpower[li].trades[ti]; var cols=tradeColsOf(t); var tk={name:'Tugasan baharu',pct:0,manpower:0}; cols.forEach(function(c){ if(!c.fixed && tk[c.key]===undefined) tk[c.key] = c.type==='number'?0:''; }); t.tasks.push(tk); render(); }
 function removeTask(li,ti,k){ commitPendingEdit(); data.manpower[li].trades[ti].tasks.splice(k,1); render(); }

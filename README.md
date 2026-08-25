@@ -68,3 +68,4 @@ PENYELARAS                    STAF
 ## 📝 Versi
 
 - **v1.0.0** — awal: task-level manpower, manual donut %, per-trade columns, section separation (Editor WBS + Editor Gambar), app launchers
+- **v1.1.0** — manpower discipline system (dropdown per trade), "INFRASTRUCTURE" keyword recognition, Others catch-all in Trade Summary, stable auto-identities for Trade Summary rows

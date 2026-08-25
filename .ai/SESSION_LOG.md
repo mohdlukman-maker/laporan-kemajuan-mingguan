@@ -4,27 +4,35 @@
 
 ---
 
-## 2026-08-22 — Bootstrap keadaan `.ai/` (migrasi aliran persistensi)
+## 2026-08-24 — Fix manpower auto-tallies (discipline + Others + stable keys)
 
-- **Objektif:** Tambah sistem keadaan berterusan kepada projek yang
-  sudah tersinkron dengan GitHub (projek #5 dalam migrasi).
+- **Objektif:** Perbaiki pepijat di mana menambah/mengedit tenaga
+  kerja di peringkat Infrastructure tidak mengemaskini jumlah dalam
+  Trade Summary.
+- **Punca sebenar ditemui:** `isInfraText()` tidak mengenali kata
+  "INFRASTRUCTURE" sendiri (hanya DRAIN/SEWER/ROADWORK/CARPARK);
+  `computeTradeActuals()` menggugurkan sebarang trade yang tidak
+  sepadan tanpa amaran.
 - **Kerja siap:**
-  - Semak keadaan sebenar: clean tree, remote = local (`501f9ef`),
-    tag `v1.0.0` wujud, struktur HTML ketiga-tiga app sah (title +
-    91 fungsi JS dalam app utama), imbasan rahsia bersih.
-  - Cipta `.ai/` (PROJECT/STATUS/NEXT_TASK/DECISIONS/SESSION_LOG) +
-    `AGENTS.md` — dokumen keadaan dalam BM/English bercampur (keputusan
-    direkod dalam DECISIONS.md).
-- **Masalah ditemui:** Tiada bug baru. Nota: tiada ujian automatik
-  (sifat projek); pengesahan = buka app dalam Chrome/Edge.
-- **Keputusan:** Lihat DECISIONS.md 2026-08-22 (bahasa dokumen; status
-  quo single-file/offline/tanpa ujian automatik sebagai keputusan
-  sedar).
-- **Ujian dilakukan:** git status/ls-remote (in sync), semakan struktur
-  HTML, imbasan rahsia pada semua fail di-track.
-- **Kerja berbaki:** Tiada segera. Calon: semakan selari model
-  Manpower dengan Hospital_Petra_Planner (NEXT_TASK.md).
-- **Tugas cadangan seterusnya:** Semakan model Manpower (jika planner
-  berubah) — jika tidak, tunggu permintaan pengguna.
-- **Commit:** (sesi ini) docs(ai) — lihat git log; sebelum sesi:
-  `501f9ef` (v1.0.0).
+  - Fix 1a: Sistem `disciplineOf()` dengan senarai `TRADE_DISCIPLINES`
+    + `INFRA_KEYWORDS` diperluas untuk "INFRASTRUCTURE"/"INFRA ".
+  - Fix 1b: Dropdown Disiplin pada setiap trade card (Edit Mode).
+  - Fix 2: Bakul "Lain-lain (Others)" + baris auto dalam Section 3;
+    hint BM dikemaskini.
+  - Fix 3: Trade Summary rows diberi `key` stabil + `auto` flag —
+    menukar nama baris tidak memutuskan pautan auto.
+  - Fix 5: Level/trade rename `onchange` ditambah `;render()`.
+  - `addLevel()` + `addTrade()` menghasilkan trade dengan discipline
+    default.
+  - `normalizeManpowerData()` mengisi discipline untuk fail lama
+    (backfill + migrasi).
+- **Ujian dilakukan (browser):**
+  - Fresh open → Total 191 (tiada regression, identik v1.0.0).
+  - +20 manpower di Drainage → Infra 20, Total 211.
+  - Tukar discipline ke Others → Others 20, Total 211.
+  - Rename Section 3 row → still auto.
+  - Padam + tambah row → row baharu manual (tiada double-count).
+  - Level rename → totals kekal stabil.
+- **Keputusan:** Lihat DECISIONS.md 2026-08-24 (discipline system;
+  unstable-name classification ditinggalkan sepenuhnya).
+- **Commit:** `feat(manpower):` — push ke origin/main.
